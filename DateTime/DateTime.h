@@ -1,9 +1,12 @@
 #pragma once
 #include <iostream>
 #include <string>
+#include <stdexcept>
 
 class DateTime
 {
+  static const int daysInMonth[13];
+
   int secondsInDay : 18;
   int dayOfMonth : 6;
   int month : 5;
