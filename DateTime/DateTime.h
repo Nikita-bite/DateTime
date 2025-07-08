@@ -11,6 +11,9 @@ class DateTime
   int dayOfMonth : 6;
   int month : 5;
   int year : 17;
+  
+  // Проверка является ли текущий год високосным
+  bool isLeapYear() const;
   // Настя
   bool Validate() const;
 public:

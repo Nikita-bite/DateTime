@@ -2,6 +2,11 @@
 
 const int DateTime::daysInMonth[13] = {0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
 
+bool DateTime::isLeapYear() const
+{
+    return ((year % 400 == 0) || (year % 100 != 0 && year % 4 == 0));
+}
+
 bool DateTime::Validate() const { return true; }
 
 DateTime::DateTime() : secondsInDay(0), dayOfMonth(1), month(1), year(2000) {}
@@ -26,7 +31,7 @@ void DateTime::AddDays(int N)
         while (N > 0)
         {
             int maxDays = daysInMonth[month], daysToAdd;
-            if (month == 2 && ((year % 400 == 0) || (year % 100 != 0 && year % 4 == 0)))
+            if (month == 2 && isLeapYear())
                 maxDays = 29;
 
             if (N > maxDays - dayOfMonth + 1)
@@ -45,7 +50,6 @@ void DateTime::AddDays(int N)
         }
     else
         while (N < 0)
-        {
             if (dayOfMonth + N > 0)
             {
                 dayOfMonth += N;
@@ -56,19 +60,58 @@ void DateTime::AddDays(int N)
                 AddMonth(-1);
                 int maxDays = daysInMonth[month];
 
-                if (month == 2 && ((year % 400 == 0) || (year % 100 != 0 && year % 4 == 0)))
+                if (month == 2 && isLeapYear())
                     maxDays = 29;
                 
                 N += dayOfMonth;
                 dayOfMonth = maxDays;
             }
-        }
 
     if (!Validate())
         throw std::runtime_error("Invalid date after AddDays operation");
     
 }
-void DateTime::AddMonth(int M) {}
+void DateTime::AddMonth(int M) 
+{
+    if (M == 0)
+        return;
+
+    int sign = M > 0 ? 1 : -1;
+    M = sign * M;
+
+    while (M != 0)
+        if (M > 12)
+        {
+            AddYears(sign);
+            M -= 12;
+        } 
+        else
+        {
+            month += sign * M;
+            M = 0;
+            if (month <= 0)
+            {
+                AddYears(-1);
+                month += 12;
+            } 
+            else if (month >= 13)
+            {
+                AddYears(1);
+                month -= 12;
+            }
+        }
+
+    // Проверяем не переполнен ли наш месяц.
+    int maxDays = daysInMonth[month];
+    if (month == 2 && isLeapYear())
+        maxDays = 29;
+
+    if (dayOfMonth > maxDays)
+        dayOfMonth = maxDays;
+    
+    if (!Validate())
+        throw std::runtime_error("Invalid date after AddMonth operation");
+}
 void DateTime::AddYears(int Y) {}
 
 int DateTime::DayofWeek() { return 0; }
