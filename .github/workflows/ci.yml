@@ -26,6 +26,6 @@ jobs:
 
     - name: Compile and run tests
       run: |
-        g++ -std=c++17 -IDateTime DateTime/DateTime.cpp DateTimeTests/DateTimeTests.cpp \
+        g++ -std=c++17 -IDateTime DateTime/DateTime.cpp DateTime/DateTimeTests/DateTimeTests.cpp \
         -lgtest -lgtest_main -pthread -o tests
         ./tests
