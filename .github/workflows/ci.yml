@@ -26,7 +26,7 @@ jobs:
 
     - name: Compile and run tests
       run: |
-        cd DateTime  # Переходим в папку DateTime
+        cd DateTime
         g++ -std=c++17 -I. DateTime.cpp DateTimeTests/Tests.cpp \
         -lgtest -lgtest_main -pthread -o tests
         ./tests
