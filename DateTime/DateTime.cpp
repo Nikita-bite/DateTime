@@ -57,50 +57,46 @@ DateTime::DateTime(int Sec, int Day, int Month, int Year) {
 }
 
 
-int DateTime::getSecondsInDay() const {
+int DateTime::getSecondsInDay() const 
+{
     return secondsInDay; 
 }
-
-
-int DateTime::getDayOfMonth() const {
+int DateTime::getDayOfMonth() const 
+{
     return dayOfMonth; 
 }
-
-
-int DateTime::getMonth() const {
+int DateTime::getMonth() const 
+{
     return month; 
 }
-
-
-int DateTime::getYear() const {
+int DateTime::getYear() const 
+{
     return year; 
 }
 
 
-void DateTime::setSecondsInDay(int Sec) {
+void DateTime::setSecondsInDay(int Sec) 
+{
     if (Sec < 0 || Sec > 86399)
       throw std::runtime_error("Invalid second");
     secondsInDay = Sec;
 }
-
-
-void DateTime::setDayOfMonth(int Day) {
+void DateTime::setDayOfMonth(int Day) 
+{
     if (Day < 1 || Day > 31) 
         throw std::runtime_error("Invalid day");
     dayOfMonth = Day; 
     if (!Validate())
         throw std::runtime_error("Invalid date");
 }
-
-
-void DateTime::setMonth(int Month) {
+void DateTime::setMonth(int Month) 
+{
     if (Month < 1 || Month > 12)
         throw std::runtime_error("Invalid month");
     month = Month;
 }
-
-
-void DateTime::setYear(int Year) {
+void DateTime::setYear(int Year) 
+{
     year = Year; 
 }
 
@@ -108,7 +104,8 @@ void DateTime::setYear(int Year) {
 bool DateTime::isEqual(const DateTime& a, const DateTime& b) { return true; }
 
 
-void DateTime::AddDays(int N) {
+void DateTime::AddDays(int N) 
+{
     if (N == 0)
     return;
 
@@ -162,8 +159,6 @@ void DateTime::AddDays(int N) {
     std::cout << "FINAL: " << secondsInDay << ", " << dayOfMonth << ", " << month << ", " << year << "\n";
     
 }
-
-
 void DateTime::AddMonth(int M) 
 {
     if (M == 0)
@@ -205,9 +200,10 @@ void DateTime::AddMonth(int M)
     if (!Validate())
         throw std::runtime_error("Invalid date after AddMonth operation");
 }
-
-
-void DateTime::AddYears(int Y) {}
+void DateTime::AddYears(int Y) 
+{
+    year += Y;
+}
 
 // алгоритм Зеллера
 int DateTime::DayofWeek() const
@@ -223,8 +219,6 @@ int DateTime::DayofWeek() const
     h = (dayOfMonth + (13 * (m + 1)) / 5 + y + y / 4 - y / 100 + y / 400) % 7;
     return h; 
 }
-
-
 std::string DateTime::DayofWeekName() const
 {
     const char* names[] = {"Суббота", "Воскресенье", "Понедельник", "Вторник", "Среда", "Четверг", "Пятница"};
@@ -255,4 +249,3 @@ std::string DateTime::ToString() const {
     result[15] = '0' + secondsInDay % 10;
     return result;
 }
-

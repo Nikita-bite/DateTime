@@ -1,22 +1,10 @@
 #include <iostream>
 #include "DateTime.h"
 
-// Проверка компилятора:
-/*
 int main()
 {
-    std::cout << "Start debugging!\n";  // Поставьте тут точку останова
-    int x = 5;                          // И здесь
-    std::cout << "x = " << x << "\n";
-    return 0;
+    time_t now = time(0);
+    std::cout << now << "\n";
+    DateTime time(now);
+    std::cout << time.ToString() << "\n\n";
 }
-//*/
-
-//*
-int main()
-{
-    DateTime time;
-    std::cout << time.ToString();
-}
-
-//*/

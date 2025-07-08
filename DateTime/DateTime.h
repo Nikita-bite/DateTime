@@ -8,8 +8,8 @@ class DateTime
   static const int daysInMonth[13];
 
   int secondsInDay : 18;
-  int dayOfMonth : 6;
-  int month : 5;
+  int dayOfMonth : 7;
+  int month : 6;
   int year : 17;
   
   // Конвертирует Unix дату

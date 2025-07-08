@@ -2,17 +2,21 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Active Debug",
+            "name": "Debug DateTime",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${fileDirname}\\${fileBasenameNoExtension}.exe",
+            "program": "${workspaceFolder}/DateTime/DateTime.exe",
             "args": [],
-            "stopAtEntry": true,
-            "cwd": "${workspaceFolder}",
-            "environment": [{"name": "PATH", "value": "${env:PATH};C:\\mingw64\\bin"}],
-            "externalConsole": false,
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}/DateTime",
+            "environment": [{
+                "name": "PATH",
+                "value": "${env:PATH};C:\\mingw64\\bin"
+            }],
+            "externalConsole": true,
             "MIMode": "gdb",
             "miDebuggerPath": "C:\\mingw64\\bin\\gdb.exe",
+            "preLaunchTask": "Build Only",
             "setupCommands": [
                 {
                     "description": "Enable pretty-printing",
@@ -22,12 +26,7 @@
                 {
                     "text": "set breakpoint pending on"
                 }
-            ],
-            "logging": {
-                "moduleLoad": false,
-                "engineLogging": true,
-                "trace": true
-            }
+            ]
         }
     ]
 }

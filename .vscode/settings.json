@@ -1,6 +1,23 @@
 {
     "files.associations": {
         "iostream": "cpp",
-        "stdexcept": "cpp"
-    }
+        "stdexcept": "cpp",
+        "*.tpp": "cpp"
+    },
+    "C_Cpp.default.cppStandard": "c++17",
+    "C_Cpp.default.compilerPath": "C:\\mingw64\\bin\\g++.exe",
+    "C_Cpp.default.includePath": [
+        "${workspaceFolder}/DateTime",
+        "C:/mingw64/include/c++",
+        "C:/mingw64/include"
+    ],
+    "terminal.integrated.shell.windows": "cmd.exe",
+    "terminal.integrated.env.windows": {
+        "PATH": "C:\\mingw64\\bin;${env:PATH}"
+    },
+    "code-runner.executorMap": {
+        "cpp": "cd ${workspaceFolder}\\DateTime && g++ -g main.cpp DateTime.cpp -o DateTime.exe && ${workspaceFolder}\\DateTime\\DateTime.exe"
+    },
+    "code-runner.runInTerminal": true,
+    "code-runner.saveFileBeforeRun": true
 }
