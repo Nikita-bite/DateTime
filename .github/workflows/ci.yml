@@ -1,4 +1,4 @@
-name: C++ CI (No CMake)
+name: C++ CI
 
 on:
   push:
@@ -15,14 +15,15 @@ jobs:
     - name: Install dependencies
       run: |
         sudo apt-get update
-        sudo apt-get install -y g++ libgtest-dev
+        sudo apt-get install -y g++ libgtest-dev cmake
 
     - name: Build GTest
       run: |
-        cd /usr/src/gtest
-        sudo cmake .
-        sudo make
-        sudo cp *.a /usr/lib
+        sudo apt-get install -y googletest googletest-dev
+        cd /usr/src/googletest
+        sudo cmake -B build -S .
+        sudo cmake --build build
+        sudo cp build/lib/*.a /usr/lib
 
     - name: Compile and run tests
       run: |
