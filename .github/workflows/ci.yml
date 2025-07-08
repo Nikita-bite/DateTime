@@ -1,0 +1,25 @@
+name: C++ CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y build-essential cmake libgtest-dev
+
+    - name: Build and test
+      run: |
+        mkdir build && cd build
+        cmake .. -DBUILD_TESTING=ON
+        cmake --build .
+        ./DateTimeTests/DateTimeTests  
