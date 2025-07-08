@@ -1,21 +1,21 @@
 cmake_minimum_required(VERSION 3.12)
 project(DateTimeTests)
 
-# Указываем пути
+# Указываем пути к исходникам
 include_directories(
     ${CMAKE_SOURCE_DIR}/DateTime
 )
 
 # Основной код
 add_library(DateTimeCore STATIC
-    DateTime/DateTime.cpp
-    DateTime/DateTime.h
+    ${CMAKE_SOURCE_DIR}/DateTime/DateTime.cpp
+    ${CMAKE_SOURCE_DIR}/DateTime/DateTime.h
 )
 
 # Тесты
 find_package(GTest REQUIRED)
 add_executable(DateTimeTests
-    DateTimeTests/DateTimeTests.cpp
+    ${CMAKE_SOURCE_DIR}/DateTimeTests/DateTimeTests.cpp
 )
 target_link_libraries(DateTimeTests
     PRIVATE
@@ -23,3 +23,6 @@ target_link_libraries(DateTimeTests
     GTest::GTest
     GTest::Main
 )
+
+enable_testing()
+add_test(NAME DateTimeTests COMMAND DateTimeTests)
