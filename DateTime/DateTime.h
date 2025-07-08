@@ -22,6 +22,7 @@ public:
   // Егор
   DateTime(time_t unixTime = 0);
   DateTime(DateTime&& other);
+  DateTime(int Sec, int Day, int Month, int Year);
   // Илья Х.
   int getSecondsInDay() const;
   int getDayOfMonth() const;
