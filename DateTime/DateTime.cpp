@@ -114,7 +114,25 @@ void DateTime::AddMonth(int M)
 }
 void DateTime::AddYears(int Y) {}
 
-int DateTime::DayofWeek() { return 0; }
+// алгоритм Зеллера
+int DateTime::DayofWeek() const
+{ 
+    int h, m = month, y = year;
+    if (m < 3)
+    {
+        m += 12;
+        --y;
+    }
+
+    // Формула Зеллера (0 - суббота, 1 - воскресенье, ..., 6 - пятница)
+    h = (dayOfMonth + (13 * (m + 1)) / 5 + y + y / 4 - y / 100 + y / 400) % 7;
+    return h; 
+}
+std::string DateTime::DayofWeekName() const
+{
+    const char* names[] = {"Суббота", "Воскресенье", "Понедельник", "Вторник", "Среда", "Четверг", "Пятница"};
+    return names[DayofWeek()];
+}
 
 DateTime DateTime::get_Now() { return DateTime(); }
 

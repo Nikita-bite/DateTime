@@ -37,7 +37,8 @@ public:
   // Настя
   void AddYears(int Y);
   // Илья Б.
-  int DayofWeek();
+  int DayofWeek() const;
+  std::string DayofWeekName() const;
 
   // Никита
   DateTime get_Now();
