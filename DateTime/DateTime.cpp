@@ -2,6 +2,17 @@
 
 const int DateTime::daysInMonth[13] = {0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
 
+void DateTime::convertFromUnix(time_t seconds)
+{
+    int days = seconds / 86400;
+    AddDays(days);
+
+    secondsInDay = seconds % 86400;
+
+    if (!Validate())
+        throw std::runtime_error("Invalid date after UNIX time convertation");
+}
+
 bool DateTime::isLeapYear() const
 {
     return ((year % 400 == 0) || (year % 100 != 0 && year % 4 == 0));
@@ -9,16 +20,55 @@ bool DateTime::isLeapYear() const
 
 bool DateTime::Validate() const { return true; }
 
-DateTime::DateTime() : secondsInDay(0), dayOfMonth(1), month(1), year(2000) {}
+DateTime::DateTime(time_t unixTime = 0) : year(1970), month(1), dayOfMonth(1), secondsInDay(0)
+{
+    convertFromUnix(unixTime);
+}
+DateTime::DateTime(DateTime&& other) : secondsInDay(other.secondsInDay), dayOfMonth(other.dayOfMonth), month(other.month), year(other.year)
+{
 
-int DateTime::getSecondsInDay() const { return secondsInDay; }
-int DateTime::getDayOfMonth() const { return dayOfMonth; }
-int DateTime::getMonth() const { return month; }
-int DateTime::getYear() const { return year; }
-void DateTime::setSecondsInDay(int Sec) { secondsInDay = Sec; }
-void DateTime::setDayOfMonth(int Day) { dayOfMonth = Day; }
-void DateTime::setMonth(int Month) { month = Month; }
-void DateTime::setYear(int Year) { year = Year; }
+}
+
+int DateTime::getSecondsInDay() const 
+{ 
+    return secondsInDay; 
+}
+int DateTime::getDayOfMonth() const 
+{ 
+    return dayOfMonth; 
+}
+int DateTime::getMonth() const 
+{ 
+    return month; 
+}
+int DateTime::getYear() const 
+{ 
+    return year; 
+}
+void DateTime::setSecondsInDay(int Sec) 
+{
+    if (Sec < 0 || Sec > 86399)
+      throw std::runtime_error("Invalid second");
+    secondsInDay = Sec;
+}
+void DateTime::setDayOfMonth(int Day) 
+{
+    if (Day < 1 || Day > 31) 
+        throw std::runtime_error("Invalid day");
+    dayOfMonth = Day; 
+    if (!Validate())
+        throw std::runtime_error("Invalid date");
+}
+void DateTime::setMonth(int Month) 
+{ 
+    if (Month < 1 || Month > 12)
+        throw std::runtime_error("Invalid month");
+    month = Month;
+}
+void DateTime::setYear(int Year) 
+{ 
+    year = Year; 
+}
 
 bool DateTime::isEqual(const DateTime& a, const DateTime& b) { return true; }
 

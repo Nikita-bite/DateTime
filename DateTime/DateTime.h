@@ -12,13 +12,16 @@ class DateTime
   int month : 5;
   int year : 17;
   
+  // Конвертирует Unix дату
+  void convertFromUnix(time_t seconds);
   // Проверка является ли текущий год високосным
   bool isLeapYear() const;
   // Настя
   bool Validate() const;
 public:
   // Егор
-  DateTime();
+  DateTime(time_t unixTime = 0);
+  DateTime(DateTime&& other);
   // Илья Х.
   int getSecondsInDay() const;
   int getDayOfMonth() const;
