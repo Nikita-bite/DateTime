@@ -19,11 +19,10 @@ jobs:
 
     - name: Build GTest
       run: |
-        sudo apt-get install -y googletest googletest-dev
-        cd /usr/src/googletest
+        cd /usr/src/googletest || cd /usr/src/gtest
         sudo cmake -B build -S .
         sudo cmake --build build
-        sudo cp build/lib/*.a /usr/lib
+        sudo cp build/lib/libgtest*.a /usr/lib
 
     - name: Compile and run tests
       run: |
