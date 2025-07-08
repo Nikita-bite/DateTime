@@ -6,7 +6,6 @@ const int DateTime::daysInMonth[13] = {0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31
 
 void DateTime::convertFromUnix(time_t seconds) {
     int days = seconds / 86400;
-    std::cout << "FUCK: " << days << "\n";
     AddDays(days);
 
     secondsInDay = seconds % 86400;
@@ -44,7 +43,7 @@ DateTime::DateTime(int Sec, int Day, int Month, int Year) {
     if (Month == 2 && isLeapYear) {
         maxDay = 29;
     }
-    //std::cout << "FUCK: " << maxDay << ", " << Month << ", " << isLeapYear << "\n";
+    
     if (Day < 1 || Day > maxDay) {
         throw std::runtime_error("Invalid day");
     }
@@ -129,7 +128,6 @@ void DateTime::AddDays(int N)
                 dayOfMonth = 1;
                 AddMonth(1);
             }
-            std::cout << "INNER: " << N << "\n";
         }
     else
         while (N < 0)
@@ -149,14 +147,9 @@ void DateTime::AddDays(int N)
                 N += dayOfMonth;
                 dayOfMonth = maxDays;
             }
-
-    
-    std::cout << "FINAL: " << secondsInDay << ", " << dayOfMonth << ", " << month << ", " << year << "\n";
     
     if (!Validate())
         throw std::runtime_error("Invalid date after AddDays operation");
-    
-    std::cout << "FINAL: " << secondsInDay << ", " << dayOfMonth << ", " << month << ", " << year << "\n";
     
 }
 void DateTime::AddMonth(int M) 

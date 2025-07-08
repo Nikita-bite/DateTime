@@ -85,9 +85,9 @@ TEST(DateTime, AddDaysEdgeCases) {
     EXPECT_EQ(dt3.getMonth(), 12);
     EXPECT_EQ(dt3.getDayOfMonth(), 31);
 
-    // Добавление несскольких лет через дни
+    // Добавление нескольких лет через дни
     DateTime dt4(0, 1, 1, 2000);
-    dt4.AddDays(365*25);
+    dt4.AddDays(365*25 + 7);
     EXPECT_EQ(dt4.getYear(), 2025);
 }
 
@@ -95,23 +95,23 @@ TEST(DateTime, AddDaysEdgeCases) {
 // Тестирование Unix-time преобразований
 TEST(DateTime, UnixTimeConversion) {
     // Начальная точка (1 января 1970)
-//    DateTime dt1(0);
-//    EXPECT_EQ(dt1.getYear(), 1970);
-//    EXPECT_EQ(dt1.getMonth(), 1);
-//    EXPECT_EQ(dt1.getDayOfMonth(), 1);
-//    EXPECT_EQ(dt1.getSecondsInDay(), 0);
+    DateTime dt1(0);
+    EXPECT_EQ(dt1.getYear(), 1970);
+    EXPECT_EQ(dt1.getMonth(), 1);
+    EXPECT_EQ(dt1.getDayOfMonth(), 1);
+    EXPECT_EQ(dt1.getSecondsInDay(), 0);
 
     // Високосный год
     DateTime dt2(31622400);  // 366 дней
-    std::cout << "TEST: " << dt2.getSecondsInDay() << ", " << dt2.getDayOfMonth() << ", " << dt2.getMonth() << ", " << dt2.getYear() << "\n";
+//    std::cout << "TEST: " << dt2.getSecondsInDay() << ", " << dt2.getDayOfMonth() << ", " << dt2.getMonth() << ", " << dt2.getYear() << "\n";
     EXPECT_EQ(dt2.getYear(), 1971);
     EXPECT_EQ(dt2.getMonth(), 1);
     EXPECT_EQ(dt2.getDayOfMonth(), 2);
-    std::cout << "TEST: " << dt2.getSecondsInDay() << ", " << dt2.getDayOfMonth() << ", " << dt2.getMonth() << ", " << dt2.getYear() << "\n";
+//    std::cout << "TEST: " << dt2.getSecondsInDay() << ", " << dt2.getDayOfMonth() << ", " << dt2.getMonth() << ", " << dt2.getYear() << "\n";
 
     // Точное время
-//    DateTime dt3(123456);
-//    EXPECT_EQ(dt3.getSecondsInDay(), 123456 % 86400);
+    DateTime dt3(123456);
+    EXPECT_EQ(dt3.getSecondsInDay(), 123456 % 86400);
 }
 
 
