@@ -7,7 +7,7 @@
             "request": "launch",
             "program": "${fileDirname}\\${fileBasenameNoExtension}.exe",
             "args": [],
-            "stopAtEntry": true,  // Остановка на входе в программу
+            "stopAtEntry": true,
             "cwd": "${workspaceFolder}",
             "environment": [{"name": "PATH", "value": "${env:PATH};C:\\mingw64\\bin"}],
             "externalConsole": false,
@@ -20,7 +20,7 @@
                     "ignoreFailures": true
                 },
                 {
-                    "text": "set breakpoint pending on"  // Разрешаем неопределённые точки останова
+                    "text": "set breakpoint pending on"
                 }
             ],
             "logging": {

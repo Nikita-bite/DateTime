@@ -20,7 +20,7 @@ bool DateTime::isLeapYear() const
 
 bool DateTime::Validate() const { return true; }
 
-DateTime::DateTime(time_t unixTime = 0) : year(1970), month(1), dayOfMonth(1), secondsInDay(0)
+DateTime::DateTime(time_t unixTime) : year(1970), month(1), dayOfMonth(1), secondsInDay(0)
 {
     convertFromUnix(unixTime);
 }
