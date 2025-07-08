@@ -1,8 +1,8 @@
-name: C++ CI
+name: C++ CI (No CMake)
 
 on:
   push:
-    branches: [main]
+    branches: [main, develop]
   pull_request:
 
 jobs:
@@ -15,11 +15,18 @@ jobs:
     - name: Install dependencies
       run: |
         sudo apt-get update
-        sudo apt-get install -y build-essential cmake libgtest-dev
+        sudo apt-get install -y g++ libgtest-dev
 
-    - name: Build and test
+    - name: Build GTest
       run: |
-        mkdir build && cd build
-        cmake .. -DBUILD_TESTING=ON
-        cmake --build .
-        ./DateTimeTests/DateTimeTests  
+        cd /usr/src/gtest
+        sudo cmake .
+        sudo make
+        sudo cp *.a /usr/lib
+
+    - name: Compile and run tests
+      run: |
+        g++ -std=c++17 -IDateTime DateTime/DateTime.cpp 
+DateTimeTests/DateTimeTests.cpp \
+        -lgtest -lgtest_main -pthread -o tests
+        ./tests
