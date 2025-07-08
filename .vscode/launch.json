@@ -1,0 +1,33 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Active Debug",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${fileDirname}\\${fileBasenameNoExtension}.exe",
+            "args": [],
+            "stopAtEntry": true,  // Остановка на входе в программу
+            "cwd": "${workspaceFolder}",
+            "environment": [{"name": "PATH", "value": "${env:PATH};C:\\mingw64\\bin"}],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "miDebuggerPath": "C:\\mingw64\\bin\\gdb.exe",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                },
+                {
+                    "text": "set breakpoint pending on"  // Разрешаем неопределённые точки останова
+                }
+            ],
+            "logging": {
+                "moduleLoad": false,
+                "engineLogging": true,
+                "trace": true
+            }
+        }
+    ]
+}

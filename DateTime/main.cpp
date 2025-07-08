@@ -1,8 +1,13 @@
 #include <iostream>
 #include "DateTime.h"
 
-//int main(int argc, const char * argv[]) {
-//    DateTime date;
-//    std::cout << date.ToString() << "\n";
-//    return 0;
-//}
+// Проверка компилятора:
+/*
+int main() 
+{
+    std::cout << "Start debugging!\n";  // Поставьте тут точку останова
+    int x = 5;                         // И здесь
+    std::cout << "x = " << x << "\n";
+    return 0;
+}
+*/
