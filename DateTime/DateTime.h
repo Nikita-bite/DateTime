@@ -54,6 +54,7 @@ public:
 	std::string ToString() const;
 
   //Илья Х.
+  // друзья)
   friend bool operator==(const DateTime& a, const DateTime& b);
   friend bool operator!=(const DateTime& a, const DateTime& b);
   friend bool operator<(const DateTime& a, const DateTime& b);
@@ -68,3 +69,13 @@ public:
 
   friend long long operator-(const DateTime& a, const DateTime& b);
 };
+/*
+
+ПЕРЕД ЗАПУСКОМ ПРОГРАММЫ В ТЕРМИНАЛЕ ВЫПОЛНИТЬ:
+
+cd .. 
+...\DateTime> после выполнения команды cd .. конечный путь в терминале должен быть таким 
+.\setup_keys.bat
+после этого работает команда ctrl+shift+t
+
+*/

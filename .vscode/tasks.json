@@ -13,7 +13,9 @@
                 "kind": "build",
                 "isDefault": true
             },
-            "problemMatcher": ["$gcc"],
+            "problemMatcher": [
+                "$gcc"
+            ],
             "presentation": {
                 "panel": "shared",
                 "reveal": "always",
@@ -32,29 +34,24 @@
                 "-Wno-unused-parameter",
                 "${workspaceFolder}\\DateTime\\main.cpp",
                 "${workspaceFolder}\\DateTime\\DateTime.cpp",
-                "-I", "${workspaceFolder}\\DateTime",
-                "-o", "${workspaceFolder}\\DateTime\\DateTime.exe"
+                "-I",
+                "${workspaceFolder}\\DateTime",
+                "-o",
+                "${workspaceFolder}\\DateTime\\DateTime.exe"
             ],
             "group": "build",
-            "problemMatcher": ["$gcc"]
+            "problemMatcher": [
+                "$gcc"
+            ]
         },
-        /*{ // Предыдущий вариант
-            "label": "Build Tests",
-            "type": "shell",
-            "command": "cmd",
-            "args": [
-                "/c",
-                "\"Build GTest\" && \"C:\\mingw64\\bin\\g++.exe\" -g -Wall -Wextra -I \"${workspaceFolder}/DateTime\" -I \"${workspaceFolder}/libs/googletest/googletest/include\" \"${workspaceFolder}/DateTime/DateTimeTests/Tests.cpp\" \"${workspaceFolder}/DateTime/DateTime.cpp\" \"${workspaceFolder}/libs/googletest/build/lib/libgtest.a\" \"${workspaceFolder}/libs/googletest/build/lib/libgtest_main.a\" -o \"${workspaceFolder}/DateTime/Tests.exe\" -pthread && echo Тесты собраны!"
-            ],
-             "group": "build",
-            "problemMatcher": ["$gcc"]
-        },*/
         {
             "label": "Run Tests",
             "type": "shell",
             "command": "${workspaceFolder}/DateTime/Tests.exe",
             "dependsOn": "Build Tests",
-            "args": ["--gtest_color=yes"],
+            "args": [
+                "--gtest_color=yes"
+            ],
             "options": {
                 "env": {
                     "GTEST_COLOR": "1"
@@ -64,7 +61,8 @@
                 "reveal": "always",
                 "panel": "dedicated"
             },
-            "group": "test"
+            "group": "test",
+            "problemMatcher": []
         },
         {
             "label": "Build GTest",
@@ -87,7 +85,9 @@
             ],
             "dependsOn": "Build GTest",
             "group": "build",
-            "problemMatcher": ["$gcc"]
+            "problemMatcher": [
+                "$gcc"
+            ]
         }
     ]
 }

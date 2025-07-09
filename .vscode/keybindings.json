@@ -2,7 +2,7 @@
   {
     "key": "ctrl+shift+t",
     "command": "workbench.action.tasks.runTask",
-    "args": "Build Tests",
+    "args": "Run Tests",
     "when": "editorTextFocus"
   }
 ]
