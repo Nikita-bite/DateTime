@@ -7,7 +7,7 @@ set PROJECT_KEYBINDINGS=%~dp0.vscode\keybindings.json
 
 :: Проверка существования файла
 if not exist "%PROJECT_KEYBINDINGS%" (
-    echo ОШИБКА: Файл .vscode\keybindings.json не найден!
+    echo ERROR: File .vscode\keybindings.json not found!
     pause
     exit /b 1
 )
@@ -36,6 +36,6 @@ set TEMP_RESULT=%TEMP%\vscode_keys_result.json
 :: Заменяем оригинальный файл
 move /Y "%TEMP_RESULT%" "%VSCODE_KEYBINDINGS%" >nul
 
-echo Keybindings успешно объединены!
-echo Перезапустите VS Code для применения изменений.
+echo Keybindings successfully united!
+echo Reboot VS Code for changes to apply.
 pause
