@@ -140,34 +140,36 @@ TEST(DateTime, DayOfWeekCalculation) {
 // тесты для setDayOfMonth
 TEST(DateTime, DayOfMonthValidation) {
     DateTime dt;
-    
     EXPECT_NO_THROW(dt.setDayOfMonth(1));
     EXPECT_NO_THROW(dt.setDayOfMonth(31));
     EXPECT_THROW(dt.setDayOfMonth(0), std::runtime_error);
     EXPECT_THROW(dt.setDayOfMonth(-1), std::runtime_error);
     EXPECT_THROW(dt.setDayOfMonth(32), std::runtime_error);
     
+    EXPECT_NO_THROW(dt.setDayOfMonth(28));
     // февраль в високосный год
     dt.setYear(2020);
     dt.setMonth(2);
     EXPECT_NO_THROW(dt.setDayOfMonth(29));
-    
     // февраль в невисокосный год
+    EXPECT_NO_THROW(dt.setDayOfMonth(28));
     dt.setYear(2021);
     EXPECT_THROW(dt.setDayOfMonth(29), std::runtime_error);
-    
     // месяцы с 30 днями
     dt.setMonth(4);
     EXPECT_NO_THROW(dt.setDayOfMonth(30));
     EXPECT_THROW(dt.setDayOfMonth(31), std::runtime_error);
+    EXPECT_NO_THROW(dt.setDayOfMonth(30));
     
     dt.setMonth(6);
     EXPECT_NO_THROW(dt.setDayOfMonth(30));
     EXPECT_THROW(dt.setDayOfMonth(31), std::runtime_error);
+    EXPECT_NO_THROW(dt.setDayOfMonth(30));
     
     dt.setMonth(9);
     EXPECT_NO_THROW(dt.setDayOfMonth(30));
     EXPECT_THROW(dt.setDayOfMonth(31), std::runtime_error);
+    EXPECT_NO_THROW(dt.setDayOfMonth(30));
     
     dt.setMonth(11);
     EXPECT_NO_THROW(dt.setDayOfMonth(30));
@@ -230,15 +232,15 @@ TEST(DateTime, YearValidation) {
     // стандартные значения
     EXPECT_NO_THROW(dt.setYear(1970));
     EXPECT_NO_THROW(dt.setYear(2023));
-    EXPECT_NO_THROW(dt.setYear(0));     // Год 0
+    EXPECT_NO_THROW(dt.setYear(1));
+    EXPECT_THROW(dt.setYear(0), std::runtime_error);     // Год 0
     EXPECT_THROW(dt.setYear(-100), std::runtime_error);  // отрицательные годы
     
-    // проверка 29 февраля при смене года
+    dt.setYear(2020);
     dt.setMonth(2);
     dt.setDayOfMonth(29);
     
     // високосный -> високосный
-    dt.setYear(2020);
     EXPECT_NO_THROW(dt.setYear(2024));  // Оба високосные
     
     // високосный -> невисокосный
@@ -269,15 +271,13 @@ TEST(DateTime, ComplexValidation) {
         dt.setMonth(2);
         dt.setDayOfMonth(29);
     });
-    
+    EXPECT_NO_THROW(dt.setMonth(5));
     // невалидная последовательность
-    EXPECT_THROW({
-        dt.setDayOfMonth(31);
-        dt.setMonth(4);  // в апреле меньше дней
-    }, std::runtime_error);
+    EXPECT_NO_THROW(dt.setDayOfMonth(31));
+    EXPECT_THROW(dt.setMonth(4), std::runtime_error);  // в апреле меньше дней
     
     // корректировка после ошибки
-    EXPECT_EQ(dt.getMonth(), 2);  // месяц должен остаться февралем
+    EXPECT_EQ(dt.getMonth(), 5);
     EXPECT_EQ(dt.getDayOfMonth(), 31);  // день остался 31
     
 

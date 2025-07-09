@@ -22,15 +22,23 @@ bool DateTime::isLeapYear(const int& _year) const {
 }
 
 
-bool DateTime::Validate() const { 
+bool DateTime::Validate() const {
     if (year < 1) return false;
     if (month < 1 || month > 12) return false;
     if (dayOfMonth < 1) return false;
-    if (dayOfMonth > daysInMonth[month] && !isLeapYear(year))  return false;
-    if (isLeapYear(year) && month == 2 && dayOfMonth > 29) return false;
+
+    if (month == 2) {
+        if (isLeapYear(year)) {
+            if (dayOfMonth > 29) return false;
+        } else {
+            if (dayOfMonth > 28) return false;
+        }
+    } else {
+        if (dayOfMonth > daysInMonth[month]) return false;
+    }
 
     return true;
- }
+}
 
 
 DateTime::DateTime(time_t unixTime) : year(1970), month(1), dayOfMonth(1), secondsInDay(0) {
@@ -90,21 +98,34 @@ void DateTime::setDayOfMonth(int Day)
 {
     if (Day < 1 || Day > 31)
         throw std::runtime_error("Invalid day");
+    int tmpdayOfMonth = dayOfMonth;
     dayOfMonth = Day;
-    if (!Validate())
+    if (!Validate()) {
+        dayOfMonth = tmpdayOfMonth;
         throw std::runtime_error("Invalid date");
+    }
 }
 void DateTime::setMonth(int Month)
 {
     if (Month < 1 || Month > 12)
         throw std::runtime_error("Invalid month");
+    int tmpMonth = month;
     month = Month;
+    if (!Validate()) {
+        month = tmpMonth;
+        throw std::runtime_error("Invalid date");
+    }
 }
 void DateTime::setYear(int Year) 
 {
     if (Year < 0)
         throw std::runtime_error("Invalid year");
-    year = Year; 
+    int tmpYear = year;
+    year = Year;
+    if (!Validate()) {
+        year = tmpYear;
+        throw std::runtime_error("Invalid date");
+    }
 }
 
 
