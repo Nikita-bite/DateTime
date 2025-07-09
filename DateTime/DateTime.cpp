@@ -182,13 +182,13 @@ void DateTime::AddMonth(int M)
             M = 0;
             if (month <= 0)
             {
-                AddYears(-1);
                 month += 12;
+                AddYears(-1);
             }
             else if (month >= 13)
             {
-                AddYears(1);
                 month -= 12;
+                AddYears(1);
             }
         }
 
