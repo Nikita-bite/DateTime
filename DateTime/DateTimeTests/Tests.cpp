@@ -91,9 +91,8 @@ TEST(DateTime, AddDaysEdgeCases) {
     EXPECT_EQ(dt4.getYear(), 2025);
     
     DateTime dt5(0, 1, 1, 1000);
-    dt5.AddDays(-366*1000);
+    EXPECT_THROW(dt5.AddDays(-366*1000), std::runtime_error);
     EXPECT_EQ(dt5.getYear(), 2025);
-    
 
     DateTime dt6(0, 1, 1, 1000);
     dt6.AddDays(-365*1000);
