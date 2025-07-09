@@ -325,37 +325,36 @@ std::string DateTime::ToString() const {
     return result;
 }
 
-bool operator==(const DateTime& a, const DateTime& b)
+bool DateTime::operator==(const DateTime& other) const
 {
-    return DateTime::isEqual(a, b);
+    return (isEqual(*this, other));
 }
-
-bool operator!=(const DateTime &a, const DateTime &b)
+bool DateTime::operator!=(const DateTime& other) const
 {
-    return !(a == b);
+    return !(*this == other);
 }
-
-bool operator<(const DateTime &a, const DateTime &b)
+bool DateTime::operator<(const DateTime& other) const
 {
-    if(a.year != b.year) return a.year < b.year;
-    if(a.month != b.month) return a.month < b.month;
-    if(a.dayOfMonth != b.dayOfMonth) return a.dayOfMonth < b.dayOfMonth;
-    return a.secondsInDay < b.secondsInDay;
+    if (this->year != other.year)
+        return this->year < other.year;
+    if (this->month != other.month)
+        return this->month < other.month;
+    if (this->dayOfMonth != other.dayOfMonth)
+        return this->dayOfMonth < other.dayOfMonth;
+    
+    return this->secondsInDay < other.secondsInDay;
 }
-
-bool operator>(const DateTime &a, const DateTime &b)
+bool DateTime::operator>(const DateTime& other) const
 {
-    return b < a;
+    return other < *this;
 }
-
-bool operator<=(const DateTime &a, const DateTime &b)
+bool DateTime::operator>=(const DateTime& other) const
 {
-    return !(b < a);
+    return !(*this < other);
 }
-
-bool operator>=(const DateTime &a, const DateTime &b)
+bool DateTime::operator<=(const DateTime& other) const
 {
-    return !(a < b);
+    return !(*this > other);
 }
 
 DateTime operator+(const DateTime &a, long long seconds)
