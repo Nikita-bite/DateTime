@@ -19,6 +19,10 @@ bool DateTime::isLeapYear() const {
     return ((year % 400 == 0) || (year % 100 != 0 && year % 4 == 0));
 }
 
+bool DateTime::isLeapYear(int year){
+    return ((year % 400 == 0) || (year % 100 != 0 && year % 4 == 0));
+}
+
 
 bool DateTime::Validate() const { return true; }
 
@@ -37,7 +41,7 @@ DateTime::DateTime(int Sec, int Day, int Month, int Year) {
     }
     secondsInDay = Sec;
     
-    bool isLeapYear = (Year % 400 == 0) || (Year % 100 != 0 && Year % 4 == 0);
+    bool isLeapYear = DateTime::isLeapYear(year);
     int maxDay = daysInMonth[Month];
 
     if (Month == 2 && isLeapYear) {
@@ -100,7 +104,9 @@ void DateTime::setYear(int Year)
 }
 
 
-bool DateTime::isEqual(const DateTime& a, const DateTime& b) { return true; }
+bool DateTime::isEqual(const DateTime& a, const DateTime& b) { 
+    return a.secondsInDay == b.secondsInDay && a.dayOfMonth == b.dayOfMonth && a.month == b.month && a.year == b.year;
+}
 
 
 void DateTime::AddDays(int N) 
@@ -112,7 +118,7 @@ void DateTime::AddDays(int N)
         while (N > 0)
         {
             int maxDays = daysInMonth[month], daysToAdd;
-            if (month == 2 && isLeapYear())
+            if (month == 2 && DateTime::isLeapYear(year))
                 maxDays = 29;
 
             if (N > maxDays - dayOfMonth + 1)
@@ -141,7 +147,7 @@ void DateTime::AddDays(int N)
                 AddMonth(-1);
                 int maxDays = daysInMonth[month];
 
-                if (month == 2 && isLeapYear())
+                if (month == 2 && DateTime::isLeapYear(year))
                     maxDays = 29;
                 
                 N += dayOfMonth;
@@ -184,7 +190,7 @@ void DateTime::AddMonth(int M)
 
     // Проверяем не переполнен ли наш месяц.
     int maxDays = daysInMonth[month];
-    if (month == 2 && isLeapYear())
+    if (month == 2 && DateTime::isLeapYear(year))
         maxDays = 29;
 
     if (dayOfMonth > maxDays)
