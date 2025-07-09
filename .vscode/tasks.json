@@ -38,17 +38,17 @@
             "group": "build",
             "problemMatcher": ["$gcc"]
         },
-        {
+        /*{ // Предыдущий вариант
             "label": "Build Tests",
             "type": "shell",
             "command": "cmd",
             "args": [
                 "/c",
-                "\"C:\\mingw64\\bin\\g++.exe\" -g -Wall -Wextra -I \"${workspaceFolder}/DateTime\" -I \"${workspaceFolder}/libs/googletest/googletest/include\" \"${workspaceFolder}/DateTime/DateTimeTests/Tests.cpp\" \"${workspaceFolder}/DateTime/DateTime.cpp\" \"${workspaceFolder}/libs/googletest/build/lib/libgtest.a\" \"${workspaceFolder}/libs/googletest/build/lib/libgtest_main.a\" -o \"${workspaceFolder}/DateTime/Tests.exe\" -pthread && echo Тесты собраны!"
+                "\"Build GTest\" && \"C:\\mingw64\\bin\\g++.exe\" -g -Wall -Wextra -I \"${workspaceFolder}/DateTime\" -I \"${workspaceFolder}/libs/googletest/googletest/include\" \"${workspaceFolder}/DateTime/DateTimeTests/Tests.cpp\" \"${workspaceFolder}/DateTime/DateTime.cpp\" \"${workspaceFolder}/libs/googletest/build/lib/libgtest.a\" \"${workspaceFolder}/libs/googletest/build/lib/libgtest_main.a\" -o \"${workspaceFolder}/DateTime/Tests.exe\" -pthread && echo Тесты собраны!"
             ],
              "group": "build",
             "problemMatcher": ["$gcc"]
-        },
+        },*/
         {
             "label": "Run Tests",
             "type": "shell",
@@ -65,6 +65,29 @@
                 "panel": "dedicated"
             },
             "group": "test"
+        },
+        {
+            "label": "Build GTest",
+            "type": "shell",
+            "command": "cmd",
+            "args": [
+                "/c",
+                "cd libs\\googletest && (if not exist build mkdir build) && cd build && cmake -G \"MinGW Makefiles\" .. && mingw32-make"
+            ],
+            "group": "build",
+            "problemMatcher": []
+        },
+        {
+            "label": "Build Tests",
+            "type": "shell",
+            "command": "cmd",
+            "args": [
+                "/c",
+                "\"C:\\mingw64\\bin\\g++.exe\" -g -Wall -Wextra -I \"${workspaceFolder}/DateTime\" -I \"${workspaceFolder}/libs/googletest/googletest/include\" \"${workspaceFolder}/DateTime/DateTimeTests/Tests.cpp\" \"${workspaceFolder}/DateTime/DateTime.cpp\" \"${workspaceFolder}/libs/googletest/build/lib/libgtest.a\" \"${workspaceFolder}/libs/googletest/build/lib/libgtest_main.a\" -o \"${workspaceFolder}/DateTime/Tests.exe\" -pthread"
+            ],
+            "dependsOn": "Build GTest",
+            "group": "build",
+            "problemMatcher": ["$gcc"]
         }
     ]
 }
