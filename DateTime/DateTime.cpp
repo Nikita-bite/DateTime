@@ -41,7 +41,7 @@ bool DateTime::Validate() const {
 }
 
 
-DateTime::DateTime(time_t unixTime) : year(1970), month(1), dayOfMonth(1), secondsInDay(0) {
+DateTime::DateTime(time_t unixTime) : secondsInDay(0), dayOfMonth(1), month(1), year(1970) {
     convertFromUnix(unixTime);
 }
 

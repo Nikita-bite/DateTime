@@ -9,7 +9,9 @@
     "C_Cpp.default.includePath": [
         "${workspaceFolder}/DateTime",
         "C:/mingw64/include/c++",
-        "C:/mingw64/include"
+        "C:/mingw64/include",
+        "${workspaceFolder}/libs/googletest/googletest/include",
+        "${workspaceFolder}/libs/googletest/googlemock/include"
     ],
     "terminal.integrated.shell.windows": "cmd.exe",
     "code-runner.executorMap": {
