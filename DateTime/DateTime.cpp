@@ -1,7 +1,7 @@
 #include "DateTime.h"
 
 
-const int DateTime::daysInMonth[13] = {0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+const int DateTime::daysInMonth[13] = { 0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
 
 
 void DateTime::convertFromUnix(time_t seconds) {
@@ -15,12 +15,8 @@ void DateTime::convertFromUnix(time_t seconds) {
 }
 
 
-bool DateTime::isLeapYear() const {
-    return ((year % 400 == 0) || (year % 100 != 0 && year % 4 == 0));
-}
-
-bool DateTime::isLeapYear(int year){
-    return ((year % 400 == 0) || (year % 100 != 0 && year % 4 == 0));
+bool DateTime::isLeapYear(const int& _year) const {
+    return ((_year % 400 == 0) || (_year % 100 != 0 && _year % 4 == 0));
 }
 
 
@@ -35,19 +31,16 @@ DateTime::DateTime(time_t unixTime) : year(1970), month(1), dayOfMonth(1), secon
 DateTime::DateTime(DateTime&& other) : secondsInDay(other.secondsInDay), dayOfMonth(other.dayOfMonth), month(other.month), year(other.year) {}
 
 
-DateTime::DateTime(int Sec, int Day, int Month, int Year) {
+DateTime::DateTime(int Sec, int Day, int Month, int Year) : year(Year) {
     if (Sec < 0 || Sec > 86399) {
         throw std::runtime_error("Invalid second");
     }
     secondsInDay = Sec;
-    
-    bool isLeapYear = DateTime::isLeapYear(year);
     int maxDay = daysInMonth[Month];
-
-    if (Month == 2 && isLeapYear) {
+    if (Month == 2 && isLeapYear(Year)) {
         maxDay = 29;
     }
-    
+
     if (Day < 1 || Day > maxDay) {
         throw std::runtime_error("Invalid day");
     }
@@ -56,76 +49,75 @@ DateTime::DateTime(int Sec, int Day, int Month, int Year) {
         throw std::runtime_error("Invalid month");
     }
     month = Month;
-    year = Year;
 }
 
 
-int DateTime::getSecondsInDay() const 
+int DateTime::getSecondsInDay() const
 {
-    return secondsInDay; 
+    return secondsInDay;
 }
-int DateTime::getDayOfMonth() const 
+int DateTime::getDayOfMonth() const
 {
-    return dayOfMonth; 
+    return dayOfMonth;
 }
-int DateTime::getMonth() const 
+int DateTime::getMonth() const
 {
-    return month; 
+    return month;
 }
-int DateTime::getYear() const 
+int DateTime::getYear() const
 {
-    return year; 
+    return year;
 }
 
 
-void DateTime::setSecondsInDay(int Sec) 
+void DateTime::setSecondsInDay(int Sec)
 {
     if (Sec < 0 || Sec > 86399)
-      throw std::runtime_error("Invalid second");
+        throw std::runtime_error("Invalid second");
     secondsInDay = Sec;
 }
-void DateTime::setDayOfMonth(int Day) 
+void DateTime::setDayOfMonth(int Day)
 {
-    if (Day < 1 || Day > 31) 
+    if (Day < 1 || Day > 31)
         throw std::runtime_error("Invalid day");
-    dayOfMonth = Day; 
+    dayOfMonth = Day;
     if (!Validate())
         throw std::runtime_error("Invalid date");
 }
-void DateTime::setMonth(int Month) 
+void DateTime::setMonth(int Month)
 {
     if (Month < 1 || Month > 12)
         throw std::runtime_error("Invalid month");
     month = Month;
 }
-void DateTime::setYear(int Year) 
+void DateTime::setYear(int Year)
 {
-    year = Year; 
+    year = Year;
 }
 
 
-bool DateTime::isEqual(const DateTime& a, const DateTime& b) { 
+bool DateTime::isEqual(const DateTime& a, const DateTime& b) {
     return a.secondsInDay == b.secondsInDay && a.dayOfMonth == b.dayOfMonth && a.month == b.month && a.year == b.year;
 }
 
 
-void DateTime::AddDays(int N) 
+void DateTime::AddDays(int N)
 {
     if (N == 0)
-    return;
+        return;
 
     if (N > 0)
         while (N > 0)
         {
             int maxDays = daysInMonth[month], daysToAdd;
-            if (month == 2 && DateTime::isLeapYear(year))
+            if (month == 2 && isLeapYear(year))
                 maxDays = 29;
 
             if (N > maxDays - dayOfMonth + 1)
                 daysToAdd = maxDays - dayOfMonth + 1;
             else
                 daysToAdd = N;
-            
+
             dayOfMonth += daysToAdd;
             N -= daysToAdd;
 
@@ -141,24 +133,24 @@ void DateTime::AddDays(int N)
             {
                 dayOfMonth += N;
                 N = 0;
-            } 
+            }
             else
             {
                 AddMonth(-1);
                 int maxDays = daysInMonth[month];
 
-                if (month == 2 && DateTime::isLeapYear(year))
+                if (month == 2 && isLeapYear(year))
                     maxDays = 29;
-                
+
                 N += dayOfMonth;
                 dayOfMonth = maxDays;
             }
-    
+
     if (!Validate())
         throw std::runtime_error("Invalid date after AddDays operation");
-    
+
 }
-void DateTime::AddMonth(int M) 
+void DateTime::AddMonth(int M)
 {
     if (M == 0)
         return;
@@ -171,7 +163,7 @@ void DateTime::AddMonth(int M)
         {
             AddYears(sign);
             M -= 12;
-        } 
+        }
         else
         {
             month += sign * M;
@@ -180,7 +172,7 @@ void DateTime::AddMonth(int M)
             {
                 AddYears(-1);
                 month += 12;
-            } 
+            }
             else if (month >= 13)
             {
                 AddYears(1);
@@ -190,23 +182,23 @@ void DateTime::AddMonth(int M)
 
     // Проверяем не переполнен ли наш месяц.
     int maxDays = daysInMonth[month];
-    if (month == 2 && DateTime::isLeapYear(year))
+    if (month == 2 && isLeapYear(year))
         maxDays = 29;
 
     if (dayOfMonth > maxDays)
         dayOfMonth = maxDays;
-    
+
     if (!Validate())
         throw std::runtime_error("Invalid date after AddMonth operation");
 }
-void DateTime::AddYears(int Y) 
+void DateTime::AddYears(int Y)
 {
     year += Y;
 }
 
 // алгоритм Зеллера
 int DateTime::DayofWeek() const
-{ 
+{
     int h, m = month, y = year;
     if (m < 3)
     {
@@ -216,11 +208,11 @@ int DateTime::DayofWeek() const
 
     // Формула Зеллера (0 - суббота, 1 - воскресенье, ..., 6 - пятница)
     h = (dayOfMonth + (13 * (m + 1)) / 5 + y + y / 4 - y / 100 + y / 400) % 7;
-    return h; 
+    return h;
 }
 std::string DateTime::DayofWeekName() const
 {
-    const char* names[] = {"Суббота", "Воскресенье", "Понедельник", "Вторник", "Среда", "Четверг", "Пятница"};
+    const char* names[] = { "Суббота", "Воскресенье", "Понедельник", "Вторник", "Среда", "Четверг", "Пятница" };
     return names[DayofWeek()];
 }
 
