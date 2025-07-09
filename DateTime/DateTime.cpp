@@ -223,22 +223,35 @@ DateTime DateTime::get_Now() { return DateTime(); }
 
 
 std::string DateTime::ToString() const {
-    std::string result(16, ' ');
-    result[0] = '0' + (year / 1000) % 10;
-    result[1] = '0' + (year / 100) % 10;
-    result[2] = '0' + (year / 10) % 10;
-    result[3] = '0' + year % 10;
-    result[4] = '-';
-    result[5] = '0' + (month / 10) % 10;
-    result[6] = '0' + month % 10;
-    result[7] = '-';
-    result[8] = '0' + (dayOfMonth / 10) % 10;
-    result[9] = '0' + dayOfMonth % 10;
-    result[10] = '-';
-    result[11] = '0' + (secondsInDay / 10000) % 10;
-    result[12] = '0' + (secondsInDay / 1000) % 10;
-    result[13] = '0' + (secondsInDay / 100) % 10;
-    result[14] = '0' + (secondsInDay / 10) % 10;
-    result[15] = '0' + secondsInDay % 10;
+    int totalSeconds = secondsInDay;
+    int hours = totalSeconds / 3600;
+    int minutes = (totalSeconds % 3600) / 60;
+    int seconds = totalSeconds % 60;
+    std::string result(25, ' ');
+    result[0] = '0' + (hours / 10) % 10;
+    result[1] = '0' + hours % 10;
+    result[2] = ':';
+    result[3] = '0' + (minutes / 10) % 10;
+    result[4] = '0' + minutes % 10;
+    result[5] = ':';
+    result[6] = '0' + (seconds / 10) % 10;
+    result[7] = '0' + seconds % 10;
+    result[8] = ' ';
+    result[9] = '0' + (dayOfMonth / 10) % 10;
+    result[10] = '0' + dayOfMonth % 10;
+    result[11] = '-';
+    result[12] = '0' + (month / 10) % 10;
+    result[13] = '0' + month % 10;
+    result[14] = '-';
+    result[15] = '0' + (year / 1000) % 10;
+    result[16] = '0' + (year / 100) % 10;
+    result[17] = '0' + (year / 10) % 10;
+    result[18] = '0' + year % 10;
+    result[19] = ' ';
+    result[20] = '0' + (secondsInDay / 10000) % 10;
+    result[21] = '0' + (secondsInDay / 1000) % 10;
+    result[22] = '0' + (secondsInDay / 100) % 10;
+    result[23] = '0' + (secondsInDay / 10) % 10;
+    result[24] = '0' + secondsInDay % 10;
     return result;
 }
