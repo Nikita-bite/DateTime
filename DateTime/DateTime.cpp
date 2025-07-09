@@ -136,6 +136,8 @@ bool DateTime::isEqual(const DateTime& a, const DateTime& b) {
 
 void DateTime::AddDays(int N)
 {
+    int tmpMonth = month;
+    int tmpDay = dayOfMonth;
     if (N == 0)
         return;
 
@@ -179,12 +181,17 @@ void DateTime::AddDays(int N)
                 dayOfMonth = maxDays;
             }
 
-    if (!Validate())
+    if (!Validate()){
+        month = tmpMonth;
+        dayOfMonth = tmpDay;
         throw std::runtime_error("Invalid date after AddDays operation");
+    }
 
 }
 void DateTime::AddMonth(int M)
 {
+    int tmpMonth = month;
+    int tmpYear = year;
     if (M == 0)
         return;
 
@@ -221,12 +228,16 @@ void DateTime::AddMonth(int M)
     if (dayOfMonth > maxDays)
         dayOfMonth = maxDays;
 
-    if (!Validate())
+    if (!Validate()){
+        year = tmpYear;
+        month = tmpMonth;
         throw std::runtime_error("Invalid date after AddMonth operation");
+    }
 }
 
 void DateTime::AddYears(int Y) 
 {
+    int tmpYear = year;
     if (Y == 0)
         return;
     else
@@ -236,8 +247,10 @@ void DateTime::AddYears(int Y)
     {
         if (!isLeapYear(year)) {dayOfMonth = 28;}
     }
-     if (!Validate())
+     if (!Validate()){
+        year = tmpYear;
         throw std::runtime_error("Invalid date after AddYear operation");
+     }
 }
 
 // алгоритм Зеллера
