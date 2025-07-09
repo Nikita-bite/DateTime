@@ -34,6 +34,7 @@ public:
   void setYear(int Year);
   // Илья Х.
   static bool isEqual(const DateTime& a, const DateTime& b);
+  static bool isLeapYear(int year);
   // Илья Б.
   void AddDays(int N);
   // Егор
