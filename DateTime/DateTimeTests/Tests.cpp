@@ -47,11 +47,11 @@ TEST(DateTime, ToStringFormat) {
 TEST(DateTime, EdgeCases) {
     DateTime dt;
     
-    dt.setYear(0);
+    dt.setYear(1);
     dt.setMonth(1);
     dt.setDayOfMonth(1);
     dt.setSecondsInDay(0);
-    EXPECT_EQ(dt.ToString(), "00:00:00 01-01-0000 00000");
+    EXPECT_EQ(dt.ToString(), "00:00:00 01-01-0001 00000");
     
     dt.setYear(9999);
     dt.setMonth(12);
@@ -89,6 +89,16 @@ TEST(DateTime, AddDaysEdgeCases) {
     DateTime dt4(0, 1, 1, 2000);
     dt4.AddDays(365*25 + 7);
     EXPECT_EQ(dt4.getYear(), 2025);
+    
+    DateTime dt5(0, 1, 1, 1000);
+    dt5.AddDays(-366*1000);
+    EXPECT_EQ(dt5.getYear(), 2025);
+    
+
+    DateTime dt6(0, 1, 1, 1000);
+    dt6.AddDays(-365*1000);
+    EXPECT_EQ(dt6.getYear(), 0);
+    
 }
 
 

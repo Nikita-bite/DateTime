@@ -26,8 +26,8 @@ bool DateTime::Validate() const {
     if (year < 1) return false;
     if (month < 1 || month > 12) return false;
     if (dayOfMonth < 1) return false;
+    if (dayOfMonth > daysInMonth[month] && !isLeapYear(year))  return false;
     if (isLeapYear(year) && month == 2 && dayOfMonth > 29) return false;
-    if (dayOfMonth > daysInMonth[month])  return false;
 
     return true;
  }
