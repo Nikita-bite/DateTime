@@ -16,11 +16,21 @@ void DateTime::convertFromUnix(time_t seconds) {
 
 
 bool DateTime::isLeapYear(const int& _year) const {
+    if (year < 0)
+        throw std::runtime_error("Invalid year");
     return ((_year % 400 == 0) || (_year % 100 != 0 && _year % 4 == 0));
 }
 
 
-bool DateTime::Validate() const { return true; }
+bool DateTime::Validate() const { 
+    if (year < 1) return false;
+    if (month < 1 || month > 12) return false;
+    if (dayOfMonth < 1) return false;
+    if (isLeapYear(year) && month == 2 && dayOfMonth > 29) return false;
+    if (dayOfMonth > daysInMonth[month])  return false;
+
+    return true;
+ }
 
 
 DateTime::DateTime(time_t unixTime) : year(1970), month(1), dayOfMonth(1), secondsInDay(0) {
@@ -90,9 +100,11 @@ void DateTime::setMonth(int Month)
         throw std::runtime_error("Invalid month");
     month = Month;
 }
-void DateTime::setYear(int Year)
+void DateTime::setYear(int Year) 
 {
-    year = Year;
+    if (Year < 0)
+        throw std::runtime_error("Invalid year");
+    year = Year; 
 }
 
 
@@ -191,9 +203,19 @@ void DateTime::AddMonth(int M)
     if (!Validate())
         throw std::runtime_error("Invalid date after AddMonth operation");
 }
-void DateTime::AddYears(int Y)
+
+void DateTime::AddYears(int Y) 
 {
-    year += Y;
+    if (Y == 0)
+        return;
+    if (Y > 0) year += Y;
+    else year -= Y;
+    if (month == 2 && dayOfMonth == 29) 
+    {
+        if (!isLeapYear(year)) {dayOfMonth = 28;}
+    }
+     if (!Validate())
+        throw std::runtime_error("Invalid date after AddYear operation");
 }
 
 // алгоритм Зеллера
