@@ -329,6 +329,63 @@ TEST(DateTime, February29EdgeCases) {
     }, std::runtime_error);
 }
 
+// тесты операторов сравнения
+TEST(DateTimeOperators, Comparison)
+{
+    DateTime a(0, 15, 7, 2025);      // 15.07.2025 00:00:00
+    DateTime b(0, 15, 7, 2025);      // то же самое
+    DateTime c(3600, 16, 7, 2025);   // на 1 день + 1 час позже
+
+    EXPECT_TRUE (a == b);
+    EXPECT_FALSE(a != b);
+    EXPECT_TRUE (c >  b);
+    EXPECT_TRUE (b <  c);
+    EXPECT_TRUE (b <= a);
+    EXPECT_TRUE (c >= a);
+}
+
+// тесты сложения секунд
+TEST(DateTimeOperators, ArithmeticSeconds)
+{
+    DateTime base(0, 31, 12, 2023);
+    DateTime next = base + 86'400;
+    EXPECT_EQ(next.getYear(),  2024);
+    EXPECT_EQ(next.getMonth(), 1);
+    EXPECT_EQ(next.getDayOfMonth(), 1);
+    EXPECT_EQ(next.getSecondsInDay(), 0);
+
+    DateTime prev = next - 90;
+    EXPECT_EQ(prev.getYear(),  2023);
+    EXPECT_EQ(prev.getMonth(), 12);
+    EXPECT_EQ(prev.getDayOfMonth(), 31);
+    EXPECT_EQ(prev.getSecondsInDay(), 86'310);
+}
+
+// тесты сложения дат
+TEST(DateTimeOperators, ArithmeticInterval)
+{
+    DateTime base(0,  1,  1, 2020);
+    DateTime interval(3'600, 2, 1, 1);
+
+    DateTime shifted = base + interval;
+    EXPECT_EQ(shifted.getYear(),  2020);
+    EXPECT_EQ(shifted.getMonth(), 1);
+    EXPECT_EQ(shifted.getDayOfMonth(), 2);
+    EXPECT_EQ(shifted.getSecondsInDay(), 3'600);
+}
+
+// тесты разности дат
+TEST(DateTimeOperators, DifferenceInSeconds)
+{
+    DateTime earlier(0,  1, 1, 2020);
+    DateTime later  (0,  2, 1, 2020);
+
+    long long diff = later - earlier;
+    EXPECT_EQ(diff, 86'400);
+
+    // проверяем знак
+    EXPECT_EQ(earlier - later, -86'400);
+}
 
 int main(int argc, char **argv) {
     testing::InitGoogleTest(&argc, argv);

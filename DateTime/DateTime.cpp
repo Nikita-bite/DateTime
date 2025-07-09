@@ -133,6 +133,20 @@ bool DateTime::isEqual(const DateTime& a, const DateTime& b) {
     return a.secondsInDay == b.secondsInDay && a.dayOfMonth == b.dayOfMonth && a.month == b.month && a.year == b.year;
 }
 
+void DateTime::AddSeconds(long long S)
+{
+    long long total =static_cast<long long>(secondsInDay) + S;
+    
+    long long days = total / 86400;
+    long long sec = total % 86400;
+    if(sec < 0){
+        sec+=86400;
+        --days;
+    }
+
+    secondsInDay = static_cast<int>(sec);
+    if(days != 0) AddDays(static_cast<int>(days));
+}
 
 void DateTime::AddDays(int N)
 {
@@ -309,4 +323,80 @@ std::string DateTime::ToString() const {
     result[23] = '0' + (secondsInDay / 10) % 10;
     result[24] = '0' + secondsInDay % 10;
     return result;
+}
+
+bool operator==(const DateTime& a, const DateTime& b)
+{
+    return DateTime::isEqual(a, b);
+}
+
+bool operator!=(const DateTime &a, const DateTime &b)
+{
+    return !(a == b);
+}
+
+bool operator<(const DateTime &a, const DateTime &b)
+{
+    if(a.year != b.year) return a.year < b.year;
+    if(a.month != b.month) return a.month < b.month;
+    if(a.dayOfMonth != b.dayOfMonth) return a.dayOfMonth < b.dayOfMonth;
+    return a.secondsInDay < b.secondsInDay;
+}
+
+bool operator>(const DateTime &a, const DateTime &b)
+{
+    return b < a;
+}
+
+bool operator<=(const DateTime &a, const DateTime &b)
+{
+    return !(b < a);
+}
+
+bool operator>=(const DateTime &a, const DateTime &b)
+{
+    return !(a < b);
+}
+
+DateTime operator+(const DateTime &a, long long seconds)
+{
+    DateTime res(a);
+    res.AddSeconds(seconds);
+    return res;
+}
+
+DateTime operator-(const DateTime &a, long long seconds)
+{
+    return a + (-seconds);
+}
+
+namespace //алгоритм Хиннанта (дней от 1.01.0001 до заданной даты)
+//соль в том, чтобы: поделить год на блоки по 400 лет (один цикл григорианского календаря),
+//год начинается с марта, далее находим номер дня в пределах года и считаем общее количество дней от эпохи
+{
+    long long daysSinceCivil(int y, int m, int d){
+        y-= m <= 2; //считаем год с марта - так проще високосность смотреть
+        const int era = (y >= 0 ? y : y-399) / 400; // делим на блоки по 400
+        const unsigned yoe = static_cast<unsigned>(y - era * 400); // year of era
+        const unsigned doy = (153*(m + (m > 2 ? -3 : 9)) + 2)/5 + d - 1; // day of year
+        const unsigned doe = yoe*365 + yoe/4 - yoe/100 + doy; // day of era
+        return era*146097LL + static_cast<long long>(doe);
+    }
+} 
+
+DateTime operator+(const DateTime &a, const DateTime& interval)
+{
+    long long days = daysSinceCivil(interval.year, interval.month, interval.dayOfMonth) - daysSinceCivil(1, 1, 1);
+
+    DateTime res(a);
+    if (days) res.AddDays(static_cast<int>(days));
+    if (interval.secondsInDay) res.AddSeconds(interval.secondsInDay);
+    return res;
+}
+
+long long operator-(const DateTime &a, const DateTime &b)
+{
+    long long days = daysSinceCivil(a.year, a.month, a.dayOfMonth) - daysSinceCivil(b.year, b.month, b.dayOfMonth);
+
+    return days*86400LL + static_cast<long long>(a.secondsInDay) - b.secondsInDay;
 }

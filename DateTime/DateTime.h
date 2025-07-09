@@ -18,10 +18,14 @@ class DateTime
 	bool isLeapYear(const int& _year) const;
 	// Настя
 	bool Validate() const;
+  //Илья Х.
+   void AddSeconds(long long S);
+
 public:
 	// Егор
 	DateTime(time_t unixTime = 0);
 	DateTime(DateTime&& other);
+  DateTime(const DateTime& other) = default;
 	DateTime(int Sec, int Day, int Month, int Year);
 	// Илья Х.
 	int getSecondsInDay() const;
@@ -48,5 +52,19 @@ public:
 	DateTime get_Now();
 
 	std::string ToString() const;
-};
 
+  //Илья Х.
+  friend bool operator==(const DateTime& a, const DateTime& b);
+  friend bool operator!=(const DateTime& a, const DateTime& b);
+  friend bool operator<(const DateTime& a, const DateTime& b);
+  friend bool operator>(const DateTime& a, const DateTime& b);
+  friend bool operator<=(const DateTime& a, const DateTime& b);
+  friend bool operator>=(const DateTime& a, const DateTime& b);
+
+  friend DateTime operator+(const DateTime& a, long long seconds);
+  friend DateTime operator-(const DateTime& a, long long seconds);
+
+  friend DateTime operator+(const DateTime& a, const DateTime& interval);
+
+  friend long long operator-(const DateTime& a, const DateTime& b);
+};
