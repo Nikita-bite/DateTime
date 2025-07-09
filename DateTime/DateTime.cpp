@@ -229,8 +229,9 @@ void DateTime::AddYears(int Y)
 {
     if (Y == 0)
         return;
-    if (Y > 0) year += Y;
-    else year -= Y;
+    else
+        year += Y;
+        
     if (month == 2 && dayOfMonth == 29) 
     {
         if (!isLeapYear(year)) {dayOfMonth = 28;}
