@@ -15,8 +15,9 @@ class DateTime
 	//Алгоритм Хиннанта (дней от 1.01.0001 до заданной даты);
 	//Смысл: поделить год на блоки по 400 лет (один цикл григорианского календаря),
 	//год начинается с марта, далее находим номер дня в пределах года и считаем общее количество дней от эпохи.
+	//static long long daysSinceCivil(int y, int m, int d);
 	static long long daysSinceCivil(int y, int m, int d);
-
+	
 	int getDaysInCurrentMonth() const;
 	
 	// Конвертирует Unix дату
@@ -37,6 +38,7 @@ public:
 	DateTime(DateTime&& other);
   	DateTime(const DateTime& other) = default;
 	DateTime(int Sec, int Day, int Month, int Year);
+	DateTime(int Day, int Month, int Year, int Hour, int Min, int Sec);
 	
 	// Илья Х.
 	int getSecondsInDay() const;
