@@ -211,58 +211,19 @@ void DateTime::convertFromUnix(time_t seconds)
     if (!Validate())
         throw std::runtime_error("Invalid date after UNIX time convertation");
 }
-void DateTime::AddSeconds(long long S) {
-    if (year == 1 && month == 1 && dayOfMonth == 1) {
-        long long total_seconds = static_cast<long long>(secondsInDay) + S;
-        if (total_seconds < 0) {
-            secondsInDay = 0;
-            throw std::runtime_error("Cannot go before 01.01.0001");
-        }
-    }
-
-    long long total_seconds = static_cast<long long>(secondsInDay) + S;
-    long long days = total_seconds / 86400;
-    int remaining_sec = static_cast<int>(total_seconds % 86400);
-
-    if (remaining_sec < 0) {
-        remaining_sec += 86400;
-        days--;
-    }
-
-    secondsInDay = remaining_sec;
+void DateTime::AddSeconds(long long S)
+{
+    long long total =static_cast<long long>(secondsInDay) + S;
     
-    if (days != 0) {
-        const int max_safe_days = INT_MAX / 2;
-        while (days > max_safe_days) {
-            AddDays(max_safe_days);
-            days -= max_safe_days;
-            if (year == 1 && month == 1 && dayOfMonth == 1 && days < 0)
-                throw std::runtime_error("Cannot go before 01.01.0001");
-        }
-        while (days < -max_safe_days) 
-        {
-            AddDays(-max_safe_days);
-            days += max_safe_days;
-
-            if (year == 1 && month == 1 && dayOfMonth == 1)
-            {
-                if (secondsInDay == 0 && days < 0)
-                {
-                    throw std::runtime_error("Cannot go before 01.01.0001");
-                }
-                break;
-            }
-        }
-        
-
-        if (days != 0) 
-        {
-            AddDays(static_cast<int>(days));
-
-            if (year == 1 && month == 1 && dayOfMonth == 1 && secondsInDay == 0)
-                throw std::runtime_error("Cannot go before 01.01.0001");
-        }
+    long long days = total / 86400;
+    long long sec = total % 86400;
+    if(sec < 0){
+        sec+=86400;
+        --days;
     }
+
+    secondsInDay = static_cast<int>(sec);
+    if(days != 0) AddDays(static_cast<int>(days));
 }
 void DateTime::AddDays(int N)
 {
@@ -315,26 +276,49 @@ void DateTime::AddDays(int N)
 }
 void DateTime::AddMonth(int M)
 {
+    int tmpMonth = month;
+    int tmpYear = year;
     if (M == 0)
         return;
-    int totalMonth = month + M;
-    int yearsToAdd = (totalMonth - 1) / 12;
-    int newMonth = (totalMonth - 1) % 12 + 1;
 
-    if (year + yearsToAdd < 1)
-        throw std::runtime_error("Cannot go below year 1 (01.01.0001)");
+    int sign = M > 0 ? 1 : -1;
+    M = sign * M;
 
-    month = newMonth;
-    AddYears(yearsToAdd);
+    while (M != 0)
+        if (M > 12)
+        {
+            AddYears(sign);
+            M -= 12;
+        }
+        else
+        {
+            month += sign * M;
+            M = 0;
+            if (month <= 0)
+            {
+                month += 12;
+                AddYears(-1);
+            }
+            else if (month >= 13)
+            {
+                month -= 12;
+                AddYears(1);
+            }
+        }
 
     // Проверяем не переполнен ли наш месяц.
-    int maxDays = getDaysInCurrentMonth();
+    int maxDays = daysInMonth[month];
+    if (month == 2 && isLeapYear(year))
+        maxDays = 29;
 
     if (dayOfMonth > maxDays)
         dayOfMonth = maxDays;
 
-    if (!Validate())
+    if (!Validate()){
+        year = tmpYear;
+        month = tmpMonth;
         throw std::runtime_error("Invalid date after AddMonth operation");
+    }
 }
 void DateTime::AddYears(int Y) 
 {
