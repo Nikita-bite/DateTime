@@ -92,11 +92,13 @@ TEST(DateTime, AddDaysEdgeCases) {
     
     DateTime dt5(0, 1, 1, 1000);
     EXPECT_THROW(dt5.AddDays(-366*1000), std::runtime_error);
-    EXPECT_EQ(dt5.getYear(), 2025);
+    EXPECT_EQ(dt5.getYear(), 1000);
 
     DateTime dt6(0, 1, 1, 1000);
-    dt6.AddDays(-365*1000);
-    EXPECT_EQ(dt6.getYear(), 0);
+    EXPECT_NO_THROW(dt6.AddDays(-365*1000));
+    EXPECT_EQ(dt6.getYear(), 1);
+//    EXPECT_EQ(dt6.getMonth(), 1);
+//    EXPECT_EQ(dt6.getDayOfMonth(), 1);
     
 }
 
@@ -339,6 +341,7 @@ TEST(DateTimeOperators, Comparison)
     EXPECT_TRUE (a == b);
     EXPECT_FALSE(a != b);
     EXPECT_TRUE (c >  b);
+    EXPECT_FALSE (a >  b);
     EXPECT_TRUE (b <  c);
     EXPECT_TRUE (b <= a);
     EXPECT_TRUE (c >= a);
@@ -359,6 +362,13 @@ TEST(DateTimeOperators, ArithmeticSeconds)
     EXPECT_EQ(prev.getMonth(), 12);
     EXPECT_EQ(prev.getDayOfMonth(), 31);
     EXPECT_EQ(prev.getSecondsInDay(), 86'310);
+    
+    DateTime base2(0, 31, 12, 2023);
+    DateTime next2 = base2 - 86'400 * 2;
+    EXPECT_EQ(next2.getYear(),  2023);
+    EXPECT_EQ(next2.getMonth(), 12);
+    EXPECT_EQ(next2.getDayOfMonth(), 29);
+    EXPECT_EQ(next2.getSecondsInDay(), 0);
 }
 
 // тесты сложения дат
@@ -385,6 +395,25 @@ TEST(DateTimeOperators, DifferenceInSeconds)
 
     // проверяем знак
     EXPECT_EQ(earlier - later, -86'400);
+    
+    DateTime earlier2(0, 28, 2, 2020);
+    DateTime later2(1000, 1, 3, 2020);
+
+    long long diff2 = later2 - earlier2;
+    EXPECT_EQ(diff2, 86'400 * 2 + 1000);
+
+    // проверяем знак
+    EXPECT_EQ(earlier2 - later2, -86'400 * 2 - 1000);
+    
+    
+    DateTime earlier3(0, 28, 2, 2020);
+    DateTime later3(1000, 1, 3, 2021);
+
+    long long diff3 = later3 - earlier3;
+    EXPECT_EQ(diff3, 86'400 * 367 + 1000);
+
+    // проверяем знак
+    EXPECT_EQ(earlier3 - later3, -86'400 * 367 - 1000);
 }
 
 int main(int argc, char **argv) {
