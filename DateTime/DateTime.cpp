@@ -364,40 +364,44 @@ std::string DateTime::ToString() const {
     int hours = totalSeconds / 3600;
     int minutes = (totalSeconds % 3600) / 60;
     int seconds = totalSeconds % 60;
-    std::string result(25, ' ');
-    result[0] = '0' + (hours / 10) % 10;
-    result[1] = '0' + hours % 10;
-    result[2] = ':';
-    result[3] = '0' + (minutes / 10) % 10;
-    result[4] = '0' + minutes % 10;
-    result[5] = ':';
-    result[6] = '0' + (seconds / 10) % 10;
-    result[7] = '0' + seconds % 10;
-    result[8] = ' ';
-    result[9] = '0' + (dayOfMonth / 10) % 10;
-    result[10] = '0' + dayOfMonth % 10;
-    result[11] = '-';
-    result[12] = '0' + (month / 10) % 10;
-    result[13] = '0' + month % 10;
-    result[14] = '-';
-    result[15] = '0' + (year / 1000) % 10;
-    result[16] = '0' + (year / 100) % 10;
-    result[17] = '0' + (year / 10) % 10;
-    result[18] = '0' + year % 10;
-    result[19] = ' ';
-    result[20] = '0' + (secondsInDay / 10000) % 10;
-    result[21] = '0' + (secondsInDay / 1000) % 10;
-    result[22] = '0' + (secondsInDay / 100) % 10;
-    result[23] = '0' + (secondsInDay / 10) % 10;
-    result[24] = '0' + secondsInDay % 10;
+    std::string strYear = std::to_string(year);
+    size_t lenYear = strYear.length();
+    std::string result(15 + std::max(lenYear, size_t(4)), ' ');
+    result[0] = '0' + (dayOfMonth / 10) % 10;
+    result[1] = '0' + dayOfMonth % 10;
+    result[2] = '-';
+    result[3] = '0' + (month / 10) % 10;
+    result[4] = '0' + month % 10;
+    result[5] = '-';
+    if (lenYear <= 4) {
+        result[6] = '0' + (year / 1000) % 10;
+        result[7] = '0' + (year / 100) % 10;
+        result[8] = '0' + (year / 10) % 10;
+        result[9] = '0' + year % 10;
+        lenYear = 4;
+    } else {
+        for (size_t i = 0; i < lenYear; i++) {
+            result[6 + i] = strYear[i];
+        }
+    }
+    result[6 + lenYear] = ' ';
+    result[7 + lenYear] = '0' + (hours / 10) % 10;
+    result[8 + lenYear] = '0' + hours % 10;
+    result[9 + lenYear] = ':';
+    result[10 + lenYear] = '0' + (minutes / 10) % 10;
+    result[11 + lenYear] = '0' + minutes % 10;
+    result[12 + lenYear] = ':';
+    result[13 + lenYear] = '0' + (seconds / 10) % 10;
+    result[14 + lenYear] = '0' + seconds % 10;
     return result;
 }
 
 
 
 DateTime DateTime::get_Now() 
-{ 
-    return DateTime(); 
+{
+    time_t now = time(0);
+    return DateTime(now);
 }
 DateTime DateTime::operator+(const DateTime& other) const
 {
