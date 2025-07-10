@@ -8,5 +8,7 @@ int main()
     DateTime time(now);
     std::cout << time.ToString() << "\n\n";
     DateTime Now;
+    Now = Now.get_Now();
     std::cout << Now.get_Now().ToString() << "\n\n";
+
 }
