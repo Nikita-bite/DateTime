@@ -2,7 +2,9 @@
     "files.associations": {
         "iostream": "cpp",
         "stdexcept": "cpp",
-        "*.tpp": "cpp"
+        "*.tpp": "cpp",
+        "random": "cpp",
+        "ranges": "cpp"
     },
     "C_Cpp.default.cppStandard": "c++17",
     "C_Cpp.default.compilerPath": "C:\\mingw64\\bin\\g++.exe",

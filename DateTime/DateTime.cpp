@@ -4,15 +4,22 @@
 const int DateTime::daysInMonth[13] = { 0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
 
 
-void DateTime::convertFromUnix(time_t seconds) {
-    int days = seconds / 86400;
-    AddDays(days);
-
-    secondsInDay = seconds % 86400;
-
-    if (!Validate())
-        throw std::runtime_error("Invalid date after UNIX time convertation");
+long long DateTime::daysSinceCivil(int y, int m, int d)
+{
+    y-= m <= 2; //считаем год с марта - так проще високосность смотреть
+    const int era = (y >= 0 ? y : y-399) / 400; // делим на блоки по 400
+    const unsigned yoe = static_cast<unsigned>(y - era * 400); // year of era
+    const unsigned doy = (153*(m + (m > 2 ? -3 : 9)) + 2)/5 + d - 1; // day of year
+    const unsigned doe = yoe*365 + yoe/4 - yoe/100 + doy; // day of era
+    return era*146097LL + static_cast<long long>(doe);
 }
+long long operator-(const DateTime &a, const DateTime &b)
+{
+    long long days = a.daysSinceCivil(a.year, a.month, a.dayOfMonth) - b.daysSinceCivil(b.year, b.month, b.dayOfMonth);
+
+    return days*86400LL + static_cast<long long>(a.secondsInDay) - b.secondsInDay;
+}
+
 
 
 bool DateTime::isLeapYear(const int& _year) const {
@@ -20,54 +27,102 @@ bool DateTime::isLeapYear(const int& _year) const {
         throw std::runtime_error("Invalid year");
     return ((_year % 400 == 0) || (_year % 100 != 0 && _year % 4 == 0));
 }
-
-
 bool DateTime::Validate() const {
-    if (year < 1) return false;
-    if (month < 1 || month > 12) return false;
-    if (dayOfMonth < 1) return false;
+    if (daysSinceCivil(year, month, dayOfMonth) < daysSinceCivil(1, 1, 1))
+        return false;
+    
+    if (month < 1 || month > 12) 
+        return false;
+    if (dayOfMonth < 1) 
+        return false;
 
     if (month == 2) {
-        if (isLeapYear(year)) {
-            if (dayOfMonth > 29) return false;
-        } else {
-            if (dayOfMonth > 28) return false;
+        if (isLeapYear(year)) 
+        {
+            if (dayOfMonth > 29)
+                return false;
+        } 
+        else 
+        {
+            if (dayOfMonth > 28) 
+                return false;
         }
-    } else {
-        if (dayOfMonth > daysInMonth[month]) return false;
+    } 
+    else 
+    {
+        if (dayOfMonth > daysInMonth[month]) 
+            return false;
     }
 
     return true;
 }
+bool DateTime::isEqual(const DateTime& a, const DateTime& b) {
+    return a.secondsInDay == b.secondsInDay && a.dayOfMonth == b.dayOfMonth && a.month == b.month && a.year == b.year;
+}
+bool DateTime::operator==(const DateTime& other) const
+{
+    return (isEqual(*this, other));
+}
+bool DateTime::operator!=(const DateTime& other) const
+{
+    return !(*this == other);
+}
+bool DateTime::operator<(const DateTime& other) const
+{
+    if (this->year != other.year)
+        return this->year < other.year;
+    if (this->month != other.month)
+        return this->month < other.month;
+    if (this->dayOfMonth != other.dayOfMonth)
+        return this->dayOfMonth < other.dayOfMonth;
+    
+    return this->secondsInDay < other.secondsInDay;
+}
+bool DateTime::operator>(const DateTime& other) const
+{
+    return other < *this;
+}
+bool DateTime::operator>=(const DateTime& other) const
+{
+    return !(*this < other);
+}
+bool DateTime::operator<=(const DateTime& other) const
+{
+    return !(*this > other);
+}
+
 
 
 DateTime::DateTime(time_t unixTime) : secondsInDay(0), dayOfMonth(1), month(1), year(1970) {
     convertFromUnix(unixTime);
 }
+DateTime::DateTime(DateTime&& other) : secondsInDay(other.secondsInDay), dayOfMonth(other.dayOfMonth), month(other.month), year(other.year) 
+{
 
-
-DateTime::DateTime(DateTime&& other) : secondsInDay(other.secondsInDay), dayOfMonth(other.dayOfMonth), month(other.month), year(other.year) {}
-
-
+}
 DateTime::DateTime(int Sec, int Day, int Month, int Year) : year(Year) {
-    if (Sec < 0 || Sec > 86399) {
+    if (daysSinceCivil(Year, Month, Day) < daysSinceCivil(1, 1, 1))
+        throw std::runtime_error("Date cannot be before 01.01.0001");
+
+    if (Sec < 0 || Sec > 86399)
         throw std::runtime_error("Invalid second");
-    }
+
     secondsInDay = Sec;
     int maxDay = daysInMonth[Month];
     if (Month == 2 && isLeapYear(Year)) {
         maxDay = 29;
     }
 
-    if (Day < 1 || Day > maxDay) {
+    if (Day < 1 || Day > maxDay)
         throw std::runtime_error("Invalid day");
-    }
+
     dayOfMonth = Day;
-    if (Month < 1 || Month > 12) {
+    if (Month < 1 || Month > 12)
         throw std::runtime_error("Invalid month");
-    }
+
     month = Month;
 }
+
 
 
 int DateTime::getSecondsInDay() const
@@ -86,6 +141,26 @@ int DateTime::getYear() const
 {
     return year;
 }
+int DateTime::DayofWeek() const // алгоритм Зеллера
+{
+    int h, m = month, y = year;
+    if (m < 3)
+    {
+        m += 12;
+        --y;
+    }
+
+    // Формула Зеллера (0 - суббота, 1 - воскресенье, ..., 6 - пятница)
+    h = (dayOfMonth + (13 * (m + 1)) / 5 + y + y / 4 - y / 100 + y / 400) % 7;
+    return h;
+}
+int DateTime::getDaysInCurrentMonth() const
+{
+    if (month == 2 && isLeapYear(year))
+        return 29;
+    return daysInMonth[month];
+}
+
 
 
 void DateTime::setSecondsInDay(int Sec)
@@ -127,170 +202,167 @@ void DateTime::setYear(int Year)
         throw std::runtime_error("Invalid date");
     }
 }
-
-
-bool DateTime::isEqual(const DateTime& a, const DateTime& b) {
-    return a.secondsInDay == b.secondsInDay && a.dayOfMonth == b.dayOfMonth && a.month == b.month && a.year == b.year;
-}
-
-void DateTime::AddSeconds(long long S)
+void DateTime::convertFromUnix(time_t seconds) 
 {
-    long long total =static_cast<long long>(secondsInDay) + S;
-    
-    long long days = total / 86400;
-    long long sec = total % 86400;
-    if(sec < 0){
-        sec+=86400;
-        --days;
+    int days = seconds / 86400;
+    AddDays(days);
+
+    secondsInDay = seconds % 86400;
+
+    if (!Validate())
+        throw std::runtime_error("Invalid date after UNIX time convertation");
+}
+void DateTime::AddSeconds(long long S) {
+    if (year == 1 && month == 1 && dayOfMonth == 1) {
+        long long total_seconds = static_cast<long long>(secondsInDay) + S;
+        if (total_seconds < 0) {
+            secondsInDay = 0;
+            throw std::runtime_error("Cannot go before 01.01.0001");
+        }
     }
 
-    secondsInDay = static_cast<int>(sec);
-    if(days != 0) AddDays(static_cast<int>(days));
-}
+    long long total_seconds = static_cast<long long>(secondsInDay) + S;
+    long long days = total_seconds / 86400;
+    int remaining_sec = static_cast<int>(total_seconds % 86400);
 
+    if (remaining_sec < 0) {
+        remaining_sec += 86400;
+        days--;
+    }
+
+    secondsInDay = remaining_sec;
+    
+    if (days != 0) {
+        const int max_safe_days = INT_MAX / 2;
+        while (days > max_safe_days) {
+            AddDays(max_safe_days);
+            days -= max_safe_days;
+            if (year == 1 && month == 1 && dayOfMonth == 1 && days < 0)
+                throw std::runtime_error("Cannot go before 01.01.0001");
+        }
+        while (days < -max_safe_days) 
+        {
+            AddDays(-max_safe_days);
+            days += max_safe_days;
+
+            if (year == 1 && month == 1 && dayOfMonth == 1)
+            {
+                if (secondsInDay == 0 && days < 0)
+                {
+                    throw std::runtime_error("Cannot go before 01.01.0001");
+                }
+                break;
+            }
+        }
+        
+
+        if (days != 0) 
+        {
+            AddDays(static_cast<int>(days));
+
+            if (year == 1 && month == 1 && dayOfMonth == 1 && secondsInDay == 0)
+                throw std::runtime_error("Cannot go before 01.01.0001");
+        }
+    }
+}
 void DateTime::AddDays(int N)
 {
-    int tmpMonth = month;
-    int tmpDay = dayOfMonth;
     if (N == 0)
         return;
+    long long currentDays = daysSinceCivil(year, month, dayOfMonth);
+    long long newDays = currentDays + N;
 
-    if (N > 0)
-        while (N > 0)
+    if (newDays < daysSinceCivil(1, 1, 1))
+        throw std::runtime_error("Cannot go below 01.01.0001");
+    
+    if (N > 0) 
+    {
+        while (N > 0) 
         {
-            int maxDays = daysInMonth[month], daysToAdd;
-            if (month == 2 && isLeapYear(year))
-                maxDays = 29;
-
-            if (N > maxDays - dayOfMonth + 1)
-                daysToAdd = maxDays - dayOfMonth + 1;
-            else
-                daysToAdd = N;
+            int daysInMonth = getDaysInCurrentMonth();
+            int daysRemaining = daysInMonth - dayOfMonth + 1;
+            int daysToAdd = std::min(N, daysRemaining);
 
             dayOfMonth += daysToAdd;
             N -= daysToAdd;
 
-            if (dayOfMonth > maxDays)
+            if (dayOfMonth > daysInMonth) 
             {
                 dayOfMonth = 1;
                 AddMonth(1);
             }
         }
-    else
-        while (N < 0)
-            if (dayOfMonth + N > 0)
+    }
+    else 
+    {
+        while (N < 0) 
+        {
+            if (dayOfMonth + N > 0) 
             {
                 dayOfMonth += N;
                 N = 0;
             }
-            else
+            else 
             {
-                AddMonth(-1);
-                int maxDays = daysInMonth[month];
-
-                if (month == 2 && isLeapYear(year))
-                    maxDays = 29;
-
                 N += dayOfMonth;
-                dayOfMonth = maxDays;
+                AddMonth(-1);
+                dayOfMonth = getDaysInCurrentMonth();
             }
-
-    if (!Validate()){
-        month = tmpMonth;
-        dayOfMonth = tmpDay;
-        throw std::runtime_error("Invalid date after AddDays operation");
+        }
     }
 
+    if (!Validate())
+        throw std::runtime_error("Invalid date after AddDays operation");
 }
 void DateTime::AddMonth(int M)
 {
-    int tmpMonth = month;
-    int tmpYear = year;
     if (M == 0)
         return;
+    int totalMonth = month + M;
+    int yearsToAdd = (totalMonth - 1) / 12;
+    int newMonth = (totalMonth - 1) % 12 + 1;
 
-    int sign = M > 0 ? 1 : -1;
-    M = sign * M;
+    if (year + yearsToAdd < 1)
+        throw std::runtime_error("Cannot go below year 1 (01.01.0001)");
 
-    while (M != 0)
-        if (M > 12)
-        {
-            AddYears(sign);
-            M -= 12;
-        }
-        else
-        {
-            month += sign * M;
-            M = 0;
-            if (month <= 0)
-            {
-                month += 12;
-                AddYears(-1);
-            }
-            else if (month >= 13)
-            {
-                month -= 12;
-                AddYears(1);
-            }
-        }
+    month = newMonth;
+    AddYears(yearsToAdd);
 
     // Проверяем не переполнен ли наш месяц.
-    int maxDays = daysInMonth[month];
-    if (month == 2 && isLeapYear(year))
-        maxDays = 29;
+    int maxDays = getDaysInCurrentMonth();
 
     if (dayOfMonth > maxDays)
         dayOfMonth = maxDays;
 
-    if (!Validate()){
-        year = tmpYear;
-        month = tmpMonth;
+    if (!Validate())
         throw std::runtime_error("Invalid date after AddMonth operation");
-    }
 }
-
 void DateTime::AddYears(int Y) 
 {
-    int tmpYear = year;
     if (Y == 0)
         return;
-    else
-        year += Y;
-        
-    if (month == 2 && dayOfMonth == 29) 
-    {
-        if (!isLeapYear(year)) {dayOfMonth = 28;}
-    }
-     if (!Validate()){
-        year = tmpYear;
+
+    int newYear = year + Y;
+    
+    if (newYear < 1)
+        throw std::runtime_error("Cannot go below year 1 (01.01.0001)");
+    
+    year = newYear;
+    if (month == 2 && dayOfMonth == 29 && !isLeapYear(year)) 
+        dayOfMonth = 28;
+    
+    if (!Validate())
         throw std::runtime_error("Invalid date after AddYear operation");
-     }
+     
 }
 
-// алгоритм Зеллера
-int DateTime::DayofWeek() const
-{
-    int h, m = month, y = year;
-    if (m < 3)
-    {
-        m += 12;
-        --y;
-    }
 
-    // Формула Зеллера (0 - суббота, 1 - воскресенье, ..., 6 - пятница)
-    h = (dayOfMonth + (13 * (m + 1)) / 5 + y + y / 4 - y / 100 + y / 400) % 7;
-    return h;
-}
+
 std::string DateTime::DayofWeekName() const
 {
     const char* names[] = { "Суббота", "Воскресенье", "Понедельник", "Вторник", "Среда", "Четверг", "Пятница" };
     return names[DayofWeek()];
 }
-
-
-DateTime DateTime::get_Now() { return DateTime(); }
-
-
 std::string DateTime::ToString() const {
     int totalSeconds = secondsInDay;
     int hours = totalSeconds / 3600;
@@ -325,77 +397,27 @@ std::string DateTime::ToString() const {
     return result;
 }
 
-bool DateTime::operator==(const DateTime& other) const
-{
-    return (isEqual(*this, other));
-}
-bool DateTime::operator!=(const DateTime& other) const
-{
-    return !(*this == other);
-}
-bool DateTime::operator<(const DateTime& other) const
-{
-    if (this->year != other.year)
-        return this->year < other.year;
-    if (this->month != other.month)
-        return this->month < other.month;
-    if (this->dayOfMonth != other.dayOfMonth)
-        return this->dayOfMonth < other.dayOfMonth;
-    
-    return this->secondsInDay < other.secondsInDay;
-}
-bool DateTime::operator>(const DateTime& other) const
-{
-    return other < *this;
-}
-bool DateTime::operator>=(const DateTime& other) const
-{
-    return !(*this < other);
-}
-bool DateTime::operator<=(const DateTime& other) const
-{
-    return !(*this > other);
-}
 
-DateTime operator+(const DateTime &a, long long seconds)
-{
-    DateTime res(a);
-    res.AddSeconds(seconds);
-    return res;
-}
 
+DateTime DateTime::get_Now() 
+{ 
+    return DateTime(); 
+}
 DateTime operator-(const DateTime &a, long long seconds)
 {
     return a + (-seconds);
-}
-
-namespace //алгоритм Хиннанта (дней от 1.01.0001 до заданной даты)
-//соль в том, чтобы: поделить год на блоки по 400 лет (один цикл григорианского календаря),
-//год начинается с марта, далее находим номер дня в пределах года и считаем общее количество дней от эпохи
-{
-    long long daysSinceCivil(int y, int m, int d){
-        y-= m <= 2; //считаем год с марта - так проще високосность смотреть
-        const int era = (y >= 0 ? y : y-399) / 400; // делим на блоки по 400
-        const unsigned yoe = static_cast<unsigned>(y - era * 400); // year of era
-        const unsigned doy = (153*(m + (m > 2 ? -3 : 9)) + 2)/5 + d - 1; // day of year
-        const unsigned doe = yoe*365 + yoe/4 - yoe/100 + doy; // day of era
-        return era*146097LL + static_cast<long long>(doe);
-    }
 } 
-
-DateTime operator+(const DateTime &a, const DateTime& interval)
+DateTime DateTime::operator+(const DateTime& other) const
 {
-    long long days = daysSinceCivil(interval.year, interval.month, interval.dayOfMonth) - daysSinceCivil(1, 1, 1);
-
-    DateTime res(a);
-    if (days) res.AddDays(static_cast<int>(days));
-    if (interval.secondsInDay) res.AddSeconds(interval.secondsInDay);
+    long long days = daysSinceCivil(other.year, other.month, other.dayOfMonth) - daysSinceCivil(1, 1, 1);
+    DateTime res(*this);
+    res.AddDays(static_cast<int>(days));
+    res.AddSeconds(other.secondsInDay);
     return res;
 }
-
-long long operator-(const DateTime &a, const DateTime &b)
+DateTime DateTime::operator+(long long seconds) const
 {
-    long long days = daysSinceCivil(a.year, a.month, a.dayOfMonth) - daysSinceCivil(b.year, b.month, b.dayOfMonth);
-
-    return days*86400LL + static_cast<long long>(a.secondsInDay) - b.secondsInDay;
+    DateTime res(*this);
+    res.AddSeconds(seconds);
+    return res;
 }
