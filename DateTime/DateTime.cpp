@@ -13,13 +13,12 @@ long long DateTime::daysSinceCivil(int y, int m, int d)
     const unsigned doe = yoe*365 + yoe/4 - yoe/100 + doy; // day of era
     return era*146097LL + static_cast<long long>(doe);
 }
-long long operator-(const DateTime &a, const DateTime &b)
+long long DateTime::operator-(const DateTime& other) const
 {
-    long long days = a.daysSinceCivil(a.year, a.month, a.dayOfMonth) - b.daysSinceCivil(b.year, b.month, b.dayOfMonth);
+    long long days = daysSinceCivil(this->year, this->month, this->dayOfMonth) - daysSinceCivil(other.year, other.month, other.dayOfMonth);
 
-    return days*86400LL + static_cast<long long>(a.secondsInDay) - b.secondsInDay;
+    return days*86400LL + static_cast<long long>(this->secondsInDay) - other.secondsInDay;
 }
-
 
 
 bool DateTime::isLeapYear(const int& _year) const {
@@ -403,10 +402,6 @@ DateTime DateTime::get_Now()
 { 
     return DateTime(); 
 }
-DateTime operator-(const DateTime &a, long long seconds)
-{
-    return a + (-seconds);
-} 
 DateTime DateTime::operator+(const DateTime& other) const
 {
     long long days = daysSinceCivil(other.year, other.month, other.dayOfMonth) - daysSinceCivil(1, 1, 1);
@@ -420,4 +415,8 @@ DateTime DateTime::operator+(long long seconds) const
     DateTime res(*this);
     res.AddSeconds(seconds);
     return res;
+}
+DateTime DateTime::operator-(long long seconds) const
+{
+    return *this + (-seconds);
 }

@@ -2,7 +2,7 @@
 #include <iostream>
 #include <string>
 #include <stdexcept>
-
+#include <climits>
 class DateTime
 {
 	static const int daysInMonth[13];
@@ -79,9 +79,9 @@ public:
 
 	DateTime operator+(const DateTime& other) const;
 	DateTime operator+(long long seconds) const;
+	DateTime operator-(long long seconds) const;
 
-  	friend DateTime operator-(const DateTime& a, long long seconds);
-  	friend long long operator-(const DateTime& a, const DateTime& b);
+	long long operator-(const DateTime& other) const;
 };
 /*
 

@@ -4,7 +4,9 @@
         "stdexcept": "cpp",
         "*.tpp": "cpp",
         "random": "cpp",
-        "ranges": "cpp"
+        "ranges": "cpp",
+        "climits": "cpp",
+        "chrono": "cpp"
     },
     "C_Cpp.default.cppStandard": "c++17",
     "C_Cpp.default.compilerPath": "C:\\mingw64\\bin\\g++.exe",
