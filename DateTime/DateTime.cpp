@@ -127,28 +127,8 @@ DateTime::DateTime(int Sec, int Day, int Month, int Year) {
 }
 DateTime::DateTime(int Day, int Month, int Year, int Hour, int Min, int Sec)
 {
-    if (daysSinceCivil(Year, Month, Day) < daysSinceCivil(1, 1, 1))
-        throw std::runtime_error("Date cannot be before 01.01.0001");
-    
     Sec = Sec + Min * 60 + Hour * 3600;
-    if (Sec < 0 || Sec > 86399)
-        throw std::runtime_error("Invalid second");
-
-    secondsInDay = Sec;
-    int maxDay = daysInMonth[Month];
-    if (Month == 2 && isLeapYear(Year)) {
-        maxDay = 29;
-    }
-
-    if (Day < 1 || Day > maxDay)
-        throw std::runtime_error("Invalid day");
-
-    dayOfMonth = Day;
-    if (Month < 1 || Month > 12)
-        throw std::runtime_error("Invalid month");
-
-    month = Month;
-    year = Year;
+    *this = DateTime(Sec, Day, Month, Year);
 }
 
 
@@ -328,9 +308,6 @@ void DateTime::AddMonth(int M)
 
     if (dayOfMonth > maxDays)
         dayOfMonth = maxDays;
-
-    if (!Validate())
-        throw std::runtime_error("Invalid date after AddMonth operation");
 }
 void DateTime::AddYears(int Y) 
 {
