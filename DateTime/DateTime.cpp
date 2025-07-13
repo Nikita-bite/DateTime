@@ -1,4 +1,6 @@
 #include "DateTime.h"
+#include <iomanip>
+#include <sstream>
 
 
 const int DateTime::daysInMonth[13] = { 0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
@@ -359,50 +361,37 @@ std::string DateTime::DayofWeekName() const
     const char* names[] = { "Суббота", "Воскресенье", "Понедельник", "Вторник", "Среда", "Четверг", "Пятница" };
     return names[DayofWeek()];
 }
+
+
 std::string DateTime::ToString() const {
     int totalSeconds = secondsInDay;
-    int hours = totalSeconds / 3600;
-    int minutes = (totalSeconds % 3600) / 60;
-    int seconds = totalSeconds % 60;
-    std::string strYear = std::to_string(year);
-    size_t lenYear = strYear.length();
-    std::string result(15 + std::max(lenYear, size_t(4)), ' ');
-    result[0] = '0' + (dayOfMonth / 10) % 10;
-    result[1] = '0' + dayOfMonth % 10;
-    result[2] = '-';
-    result[3] = '0' + (month / 10) % 10;
-    result[4] = '0' + month % 10;
-    result[5] = '-';
-    if (lenYear <= 4) {
-        result[6] = '0' + (year / 1000) % 10;
-        result[7] = '0' + (year / 100) % 10;
-        result[8] = '0' + (year / 10) % 10;
-        result[9] = '0' + year % 10;
-        lenYear = 4;
-    } else {
-        for (size_t i = 0; i < lenYear; i++) {
-            result[6 + i] = strYear[i];
+        int hours = totalSeconds / 3600;
+        int minutes = (totalSeconds % 3600) / 60;
+        int seconds = totalSeconds % 60;
+
+        std::ostringstream oss;
+
+        oss << std::setfill('0') << std::setw(2) << dayOfMonth << '-' << std::setw(2) << month << '-';
+
+        if (year < 10000) {
+            oss << std::setw(4) << year;
+        } else {
+            oss << year;
         }
-    }
-    result[6 + lenYear] = ' ';
-    result[7 + lenYear] = '0' + (hours / 10) % 10;
-    result[8 + lenYear] = '0' + hours % 10;
-    result[9 + lenYear] = ':';
-    result[10 + lenYear] = '0' + (minutes / 10) % 10;
-    result[11 + lenYear] = '0' + minutes % 10;
-    result[12 + lenYear] = ':';
-    result[13 + lenYear] = '0' + (seconds / 10) % 10;
-    result[14 + lenYear] = '0' + seconds % 10;
-    return result;
+
+        oss << ' ' << std::setw(2) << hours << ':' << std::setw(2) << minutes << ':' << std::setw(2) << seconds;
+
+        return oss.str();
 }
 
 
 
-DateTime DateTime::get_Now() 
-{
+DateTime DateTime::get_Now() {
     time_t now = time(0);
     return DateTime(now);
 }
+
+
 DateTime DateTime::operator+(const DateTime& other) const
 {
     long long days = daysSinceCivil(other.year, other.month, other.dayOfMonth) - daysSinceCivil(1, 1, 1);

@@ -85,17 +85,17 @@ TEST(DateTime, AddDaysEdgeCases) {
 
     // переход через год
     DateTime dt2(0, 31, 12, 2023);
-    dt2.AddDays(1);
+    dt2.AddMonth(2);
     EXPECT_EQ(dt2.getYear(), 2024);
-    EXPECT_EQ(dt2.getMonth(), 1);
-    EXPECT_EQ(dt2.getDayOfMonth(), 1);
+    EXPECT_EQ(dt2.getMonth(), 2);
+    EXPECT_EQ(dt2.getDayOfMonth(), 29);
 
     // вычитание дней
-    DateTime dt3(0, 1, 1, 2023);
-    dt3.AddDays(-1);
-    EXPECT_EQ(dt3.getYear(), 2022);
+    DateTime dt3(0, 1, 1, 2025);
+    dt3.AddDays(-368);
+    EXPECT_EQ(dt3.getYear(), 2023);
     EXPECT_EQ(dt3.getMonth(), 12);
-    EXPECT_EQ(dt3.getDayOfMonth(), 31);
+    EXPECT_EQ(dt3.getDayOfMonth(), 30);
 
     // добавление нескольких лет через дни
     DateTime dt4(0, 1, 1, 2000);
