@@ -57,9 +57,13 @@ std::cout << "Новая дата: " << Date.ToString() << " (" << Date.DayofWee
 ## Требования
 
   
-- Компилятор с поддержкой C++17
+- Компилятор с поддержкой C++17(GCC, Clang, MSVC)
 
-- Тестовая среда: Google Test (для unit-тестов)
+- CMake 3.15+
+
+- SFML 2.6.x (только для системных зависимостей)
+
+- Тестовая среда: Google Test (для unit-тестов, подключается автоматически)
 
 ## Сборка проекта
 
@@ -92,5 +96,81 @@ C:\mingw64\bin
 cd DateTime
 
 g++ DateTime.cpp main.cpp -o datetime_app && ./datetime_app
+```
+
+
+### Общий способ через CMake
+-	Клонируйте репозиторий:
+ 
+ ```bash
+git clone --recursive https://github.com/Nikita-bite/DateTime.git
+cd DateTime
+```
+
+-	Создайте папку сборки и сконфигурируйте проект:
+ 
+ ```bash
+rm -r -fo build # (если DateTime\build уже есть)
+mkdir build
+cd build
+
+cmake .. -DCMAKE_BUILD_TYPE=Release
+```
+
+-	Соберите проект:
+ 
+ ```bash
+cmake --build . --config Release
+```
+
+-	Запустите приложение:
+ 
+ ```bash
+./bin/DateTimeApp  # Linux/macOS
+.\bin\DateTimeApp.exe  # Windows
+```
+
+#### Для разработчиков
+Запуск тестов:
+```bash
+cd build
+ctest --output-on-failure
+```
+Или напрямую:
+```bash
+.\bin\DateTimeTests.exe
+```
+
+#### Платформенные особенности
+##### Windows:
+Рекомендуется использовать Ninja:
+ ```bash
+cmake .. -G "Ninja" -DSFML_DIR="C:/SFML-2.6.2/lib/cmake/SFML"
+```
+
+##### macOS (Xcode):
+```bash
+cmake .. -G "Xcode"
+open DateTime.xcodeproj
+```
+
+##### Linux:
+```bash
+sudo apt install build-essential cmake libsfml-dev
+```
+
+## Структура проекта
+
+```bash
+DateTime/
+├── build/          # Папка сборки (не в репозитории)
+├── DateTime/
+│   ├── DateTime.h  # Основной заголовочный файл
+│   ├── DateTime.cpp
+│   ├── main.cpp    # Пример использования
+│   └── DateTimeTests/ # Unit-тесты
+├── libs/
+│   └── googletest  # Автоматически подключается
+└── CMakeLists.txt  # Конфигурация сборки
 ```
 
