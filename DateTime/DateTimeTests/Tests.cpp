@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include "DateTime.h"
+#include "../DateTime.h"
 
 
 TEST(DateTime, Constructor) {
@@ -650,5 +650,11 @@ TEST(DateTimeOperators, DifferenceInSeconds)
 
 int main(int argc, char **argv) {
     testing::InitGoogleTest(&argc, argv);
+
+    // Включаем цветной вывод и детализацию
+    testing::GTEST_FLAG(color) = "yes";
+    testing::GTEST_FLAG(print_time) = true;
+    testing::GTEST_FLAG(print_utf8) = true;
+
     return RUN_ALL_TESTS();
 }

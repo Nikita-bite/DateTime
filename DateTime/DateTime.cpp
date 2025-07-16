@@ -8,12 +8,12 @@ const int DateTime::daysInMonth[13] = { 0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 3
 
 long long DateTime::daysSinceCivil(int y, int m, int d) 
 {
-    y -= m <= 2; // Год начинается с марта
-    const int era = (y >= 0 ? y : y - 399) / 400; // Эра (400-летний цикл)
-    const unsigned yoe = static_cast<unsigned>(y - era * 400); // Год в эре
-    const unsigned doy = (153*(m + (m > 2 ? -3 : 9)) + 2)/5 + d - 1; // День в году (от марта)
-    const unsigned doe = yoe*365 + yoe/4 - yoe/100 + doy; // День в эре (от 0000-03-01)
-    return era*146097LL + static_cast<long long>(doe) - 306; // Коррекция для 01.01.0001
+    y -= m <= 2;                                                        // Год начинается с марта
+    const int era = (y >= 0 ? y : y - 399) / 400;                       // Эра (400-летний цикл)
+    const unsigned yoe = static_cast<unsigned>(y - era * 400);          // Год в эре
+    const unsigned doy = (153*(m + (m > 2 ? -3 : 9)) + 2)/5 + d - 1;    // День в году (от марта)
+    const unsigned doe = yoe*365 + yoe/4 - yoe/100 + doy;               // День в эре (от 0000-03-01)
+    return era*146097LL + static_cast<long long>(doe) - 306;            // Коррекция для 01.01.0001
 }
 long long DateTime::operator-(const DateTime& other) const
 {
@@ -149,13 +149,13 @@ int DateTime::getYear() const
 {
     return year;
 }
-int DateTime::DayofWeek() const // алгоритм Зеллера
+int DateTime::DayofWeek() const
 {
     int h, m = month, y = year;
     if (m < 3)
     {
-        m += 12;
-        --y;
+        m += 12; // Январь -> 13, февраль -> 14
+        --y;     // год уменьшается на 1
     }
 
     // Формула Зеллера (0 - суббота, 1 - воскресенье, ..., 6 - пятница)
@@ -279,9 +279,6 @@ void DateTime::AddDays(int N)
             }
         }
     }
-
-    if (!Validate())
-        throw std::runtime_error("Invalid date after AddDays operation");
 }
 void DateTime::AddMonth(int M)
 {
@@ -326,9 +323,6 @@ void DateTime::AddYears(int Y)
     int maxDays =  getDaysInCurrentMonth();
     if (dayOfMonth > maxDays)
         dayOfMonth = maxDays;
-
-    if (!Validate())
-        throw std::runtime_error("Invalid date after AddYear operation");
 }
 
 
@@ -338,8 +332,6 @@ std::string DateTime::DayofWeekName() const
     const char* names[] = { "Суббота", "Воскресенье", "Понедельник", "Вторник", "Среда", "Четверг", "Пятница" };
     return names[DayofWeek()];
 }
-
-
 std::string DateTime::ToString() const {
     int totalSeconds = secondsInDay;
         int hours = totalSeconds / 3600;
@@ -363,12 +355,11 @@ std::string DateTime::ToString() const {
 
 
 
-DateTime DateTime::get_Now() {
+DateTime DateTime::get_Now() 
+{
     time_t now = time(0);
     return DateTime(now);
 }
-
-
 DateTime DateTime::operator+(const DateTime& other) const
 {
     long long days = daysSinceCivil(other.year, other.month, other.dayOfMonth) - daysSinceCivil(1, 1, 1);

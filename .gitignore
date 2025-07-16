@@ -1,26 +1,77 @@
-# Системные файлы macOS
+### Системные файлы ###
+# macOS
 .DS_Store
 ._*
 .Spotlight-V100
 .Trashes
 
-# Файлы IDE (Xcode)
+# Windows
+Thumbs.db
+ehthumbs*.db
+Desktop.ini
+
+### IDE и редакторы ###
+# Xcode
 *.xcodeproj/*
-!*.xcodeproj/project.pbxproj
+!*.xcodeproj/project.pbxproj  # Сохраняем только основной проект-файл
 *.xcworkspace/*
 xcuserdata/
 DerivedData/
 
-# Сборка CMake
-build/
+# VS Code
+.vscode/*
+!.vscode/launch.json          # Исключаем важные конфигурации
+
+# Другие IDE
+.idea/
+*.code-workspace
+*.sublime-workspace
+
+### Сборка CMake ###
+build/                        # Вся папка сборки
 CMakeCache.txt
 CMakeFiles/
 cmake_install.cmake
 Makefile
+*.ninja
+*.ninja_deps
+*.user
+*.suo
+*.opensdf
+*.sdf
 
-# Бинарные файлы и логи
+### Бинарные и временные файлы ###
+# Исполняемые файлы
+bin/*.exe                     # Но не игнорируем саму папку bin/
+bin/*.dll                     # SFML DLL (копируются при сборке)
+*.app
 *.out
-*.exe
-*.log
+*.so
+*.dylib
+
+# Промежуточные файлы
 *.o
+*.obj
 *.a
+*.lib
+*.pdb
+*.ilk
+*.exp
+*.res
+*.gcda
+*.gcno
+
+# Логи и отладочная информация
+*.log
+*.tlog
+*.lastbuildstate
+
+### SFML специфика ###
+# Игнорируем копии DLL, но не саму папку bin
+!bin/sfml-*.dll
+
+### Исключения ###
+# Не игнорируем лицензии и документацию
+!LICENSE*
+!README.md
+!.gitmodules

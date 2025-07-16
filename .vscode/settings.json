@@ -1,31 +1,17 @@
 {
-    "files.associations": {
-        "iostream": "cpp",
-        "stdexcept": "cpp",
-        "*.tpp": "cpp",
-        "random": "cpp",
-        "ranges": "cpp",
-        "climits": "cpp",
-        "chrono": "cpp"
-    },
-    "C_Cpp.default.cppStandard": "c++17",
-    "C_Cpp.default.compilerPath": "C:\\mingw64\\bin\\g++.exe",
-    "C_Cpp.default.includePath": [
-        "${workspaceFolder}/DateTime",
-        "C:/mingw64/include/c++",
-        "C:/mingw64/include",
-        "${workspaceFolder}/libs/googletest/googletest/include",
-        "${workspaceFolder}/libs/googletest/googlemock/include"
-    ],
-    "terminal.integrated.shell.windows": "cmd.exe",
-    "code-runner.executorMap": {
-        "cpp": "cd ${workspaceFolder}\\DateTime && g++ -g main.cpp DateTime.cpp -o DateTime.exe && ${workspaceFolder}\\DateTime\\DateTime.exe"
-    },
-    "code-runner.runInTerminal": true,
-    "code-runner.saveFileBeforeRun": true,
-    "terminal.integrated.defaultProfile.windows": "Command Prompt",
-    "terminal.integrated.cwd": "${workspaceFolder}/DateTime",
-    "terminal.integrated.env.windows": {
-        "PATH": "${env:PATH};C:\\mingw64\\bin"
-    }
+  // Базовые настройки CMake
+  "cmake.configureOnOpen": true,
+  "cmake.buildDirectory": "${workspaceFolder}/build",
+  "cmake.generator": "Ninja",
+  "cmake.parallelJobs": 4,
+
+  // Интеграция с C++ расширением
+  "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
+  "C_Cpp.intelliSenseEngine": "CMake",
+
+  // Опциональные настройки (по желанию)
+  "cmake.configureSettings": {
+    "SFML_DIR": "C:/SFML-2.6.2/lib/cmake/SFML"
+  },
+  "cmake.cmakePath": "cmake"
 }

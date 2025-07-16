@@ -2,21 +2,22 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Debug DateTime",
+            "name": "Debug DateTimeApp",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/DateTime/DateTime.exe",
+            "program": "${workspaceFolder}/build/bin/DateTimeApp.exe",
             "args": [],
             "stopAtEntry": false,
-            "cwd": "${workspaceFolder}/DateTime",
-            "environment": [{
-                "name": "PATH",
-                "value": "${env:PATH};C:\\mingw64\\bin"
-            }],
+            "cwd": "${workspaceFolder}/build/bin",
+            "environment": [
+                {
+                    "name": "PATH",
+                    "value": "${env:PATH};C:/mingw64/bin;C:/SFML-2.6.2/bin"
+                }
+            ],
             "externalConsole": true,
             "MIMode": "gdb",
-            "miDebuggerPath": "C:\\mingw64\\bin\\gdb.exe",
-            "preLaunchTask": "Build Only",
+            "miDebuggerPath": "C:/mingw64/bin/gdb.exe",
             "setupCommands": [
                 {
                     "description": "Enable pretty-printing",
@@ -26,7 +27,26 @@
                 {
                     "text": "set breakpoint pending on"
                 }
-            ]
+            ],
+            "preLaunchTask": "Build All"
+        },
+        {
+            "name": "Debug Tests",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/build/bin/DateTimeTests.exe",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}/build/bin",
+            "environment": [
+                {
+                    "name": "PATH",
+                    "value": "${env:PATH};C:/mingw64/bin;C:/SFML-2.6.2/bin"
+                }
+            ],
+            "externalConsole": true,
+            "MIMode": "gdb",
+            "miDebuggerPath": "C:/mingw64/bin/gdb.exe"
         }
     ]
 }
