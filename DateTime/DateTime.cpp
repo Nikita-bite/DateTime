@@ -2,7 +2,6 @@
 #include <iomanip>
 #include <sstream>
 
-
 const int DateTime::daysInMonth[13] = { 0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
 
 
@@ -130,6 +129,17 @@ DateTime::DateTime(int Day, int Month, int Year, int Hour, int Min, int Sec)
     Sec = Sec + Min * 60 + Hour * 3600;
     *this = DateTime(Sec, Day, Month, Year);
 }
+DateTime::DateTime(std::string DATE)
+{
+    int d = std::stoi(DATE.substr(0, 2));
+    int m = std::stoi(DATE.substr(3, 2));
+    int y = std::stoi(DATE.substr(6, 4));
+    int h = std::stoi(DATE.substr(11, 2));
+    int min = std::stoi(DATE.substr(14, 2));
+    int s = std::stoi(DATE.substr(17, 2));
+
+    *this = DateTime(d, m, y, h, min, s);
+}
 
 
 
@@ -244,67 +254,26 @@ void DateTime::AddDays(int N)
     if (newDays < 1)
         throw std::runtime_error("Cannot go below 01.01.0001");
     
-    if (N > 0) 
-    {
-        while (N > 0) 
-        {
-            int daysInMonth = getDaysInCurrentMonth();
-            int daysRemaining = daysInMonth - dayOfMonth + 1;
-            int daysToAdd = N < daysRemaining ? N : daysRemaining;
-
-            dayOfMonth += daysToAdd;
-            N -= daysToAdd;
-
-            if (dayOfMonth > daysInMonth) 
-            {
-                dayOfMonth = 1;
-                AddMonth(1);
-            }
-        }
-    }
-    else 
-    {
-        while (N < 0) 
-        {
-            if (dayOfMonth + N > 0) 
-            {
-                dayOfMonth += N;
-                N = 0;
-            }
-            else 
-            {
-                N += dayOfMonth;
-                AddMonth(-1);
-                dayOfMonth = getDaysInCurrentMonth();
-            }
-        }
-    }
+    civilFromDays(newDays);
 }
 void DateTime::AddMonth(int M)
 {
     if (M == 0)
         return;
 
-    int totalMonth = month + M;
-    int yearsToAdd = (totalMonth - 1) / 12;
-    int newMonth = (totalMonth - 1) % 12 + 1;
+    int totalMonth = year * 12 + (month - 1) + M;
+    int newYear = totalMonth / 12;
+    int newMonth = (totalMonth % 12) + 1;
     
-    if (year + yearsToAdd < 1)
+    if (newYear < 1)
         throw std::runtime_error("Cannot go below year 1 (01.01.0001)");
 
-    if (newMonth < 1) 
-    {
-        newMonth += 12;
-        AddYears(-1);
-    }
-    month = newMonth;
-    AddYears(yearsToAdd);    
-
     // Проверяем не переполнен ли наш месяц.
-    int maxDays =  getDaysInCurrentMonth();
+    int maxDay =  (newMonth == 2 && isLeapYear(newYear)) ? 29 : daysInMonth[newMonth];
+    dayOfMonth = (dayOfMonth < maxDay) ? dayOfMonth : maxDay;
 
-    if (dayOfMonth > maxDays)
-        dayOfMonth = maxDays;
+    year = newYear;
+    month = newMonth;
 }
 void DateTime::AddYears(int Y) 
 {
@@ -316,15 +285,24 @@ void DateTime::AddYears(int Y)
     if (newYear < 1)
         throw std::runtime_error("Cannot go below year 1 (01.01.0001)");
     
-    year = newYear;
-    if (month == 2 && dayOfMonth == 29 && !isLeapYear(year)) 
+    if (month == 2 && dayOfMonth == 29 && !isLeapYear(newYear)) 
         dayOfMonth = 28;
     
-    int maxDays =  getDaysInCurrentMonth();
-    if (dayOfMonth > maxDays)
-        dayOfMonth = maxDays;
+    year = newYear;
 }
-
+void DateTime::civilFromDays(long long Days)
+{
+    Days += 306;
+    const long long era = (Days >= 0 ? Days : Days - 146096) / 146097;
+    const unsigned doe = static_cast<unsigned>(Days - era*146097);
+    const unsigned yoe = (doe - doe/1460 + doe/36524 - doe/146096) / 365;
+    year = static_cast<int>(yoe) + era * 400;
+    const unsigned doy = doe - (365 * yoe + yoe / 4 - yoe / 100);
+    const unsigned mp = (5 * doy + 2) / 153;
+    dayOfMonth = doy - (153 * mp + 2) / 5 + 1;
+    month = mp < 10 ? mp + 3 : mp - 9;
+    year += (month <= 2);
+}
 
 
 std::string DateTime::DayofWeekName() const

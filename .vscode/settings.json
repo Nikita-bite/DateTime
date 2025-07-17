@@ -13,5 +13,9 @@
   "cmake.configureSettings": {
     "SFML_DIR": "C:/SFML-2.6.2/lib/cmake/SFML"
   },
-  "cmake.cmakePath": "cmake"
+  "cmake.cmakePath": "cmake",
+  "files.associations": {
+    "xstring": "cpp",
+    "string": "cpp"
+  }
 }

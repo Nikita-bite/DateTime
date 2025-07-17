@@ -17,6 +17,7 @@ class DateTime
   //год начинается с марта, далее находим номер дня в пределах года и считаем общее количество дней от эпохи.
   //static long long daysSinceCivil(int y, int m, int d);
   static long long daysSinceCivil(int y, int m, int d);
+  void civilFromDays(long long Days);
     
   int getDaysInCurrentMonth() const;
     
@@ -35,6 +36,7 @@ public:
   DateTime(const DateTime& other) = default;
   DateTime(int Sec, int Day, int Month, int Year);
   DateTime(int Day, int Month, int Year, int Hour, int Min, int Sec);
+  DateTime(std::string DATE);
   DateTime& operator=(const DateTime& other) = default;
   DateTime get_Now();  
   DateTime operator+(const DateTime& other) const;
